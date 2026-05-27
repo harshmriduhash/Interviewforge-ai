@@ -3,8 +3,15 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { Mic, LayoutDashboard, History, BarChart2, BookOpen, Building2, FileText, Settings, LogOut, ChevronRight } from "lucide-react";
-import { cn } from "@/lib/utils";
 import { useState } from "react";
+
+const ORANGE = "#FF5C00";
+const BG = "#0A0A0A";
+const SURFACE = "#141414";
+const BORDER = "#2E2E2E";
+const TEXT = "#F5F5F5";
+const MUTED = "#A3A3A3";
+const DIM = "#525252";
 
 const NAV_ITEMS = [
     { name: "Dashboard", href: "/dashboard", icon: LayoutDashboard },
@@ -22,73 +29,97 @@ export function Sidebar() {
 
     return (
         <aside
-            className={cn(
-                "h-screen fixed left-0 top-0 bg-[#0D0D0D] border-r border-border transition-all duration-300 z-50 flex flex-col",
-                collapsed ? "w-20" : "w-64"
-            )}
+            style={{
+                height: "100vh",
+                position: "fixed",
+                left: 0,
+                top: 0,
+                background: BG,
+                borderRight: `1px solid ${BORDER}`,
+                transition: "width 0.3s",
+                zIndex: 50,
+                display: "flex",
+                flexDirection: "column",
+                width: collapsed ? 72 : 240,
+                flexShrink: 0,
+            }}
         >
-            {/* Sidebar Header */}
-            <div className="h-16 flex items-center px-6 border-b border-border/50">
-                <Link href="/" className="flex items-center gap-2 overflow-hidden whitespace-nowrap">
-                    <Mic className="text-primary w-7 h-7 shrink-0" />
+            {/* Header */}
+            <div style={{ height: 64, display: "flex", alignItems: "center", padding: "0 16px", borderBottom: `1px solid ${BORDER}`, gap: 8, overflow: "hidden" }}>
+                <Link href="/" style={{ display: "flex", alignItems: "center", gap: 8, textDecoration: "none", overflow: "hidden" }}>
+                    <Mic style={{ color: ORANGE, width: 28, height: 28, flexShrink: 0 }} />
                     {!collapsed && (
                         <>
-                            <span className="text-lg font-bold text-white tracking-tighter italic uppercase">InterviewForge</span>
-                            <span className="bg-primary px-1 py-0.5 rounded text-[10px] font-black text-white">AI</span>
+                            <span style={{ fontSize: 16, fontWeight: 800, color: TEXT, whiteSpace: "nowrap", letterSpacing: "-0.5px", fontStyle: "italic", textTransform: "uppercase" }}>InterviewForge</span>
+                            <span style={{ background: ORANGE, padding: "2px 5px", borderRadius: 4, fontSize: 10, fontWeight: 900, color: "#fff", lineHeight: 1, flexShrink: 0 }}>AI</span>
                         </>
                     )}
                 </Link>
             </div>
 
-            {/* Nav Links */}
-            <nav className="flex-1 py-6 px-3 space-y-1">
+            {/* Nav */}
+            <nav style={{ flex: 1, padding: "16px 8px", display: "flex", flexDirection: "column", gap: 4, overflowY: "auto" }}>
                 {NAV_ITEMS.map((item) => {
                     const isActive = pathname === item.href;
                     return (
                         <Link
                             key={item.name}
                             href={item.href}
-                            className={cn(
-                                "flex items-center gap-3 px-3 py-3 rounded-xl transition-all group overflow-hidden whitespace-nowrap",
-                                isActive
-                                    ? "bg-primary/10 text-primary border border-primary/20"
-                                    : "text-text-secondary hover:bg-surface hover:text-white"
-                            )}
+                            style={{
+                                display: "flex",
+                                alignItems: "center",
+                                gap: 12,
+                                padding: "10px 12px",
+                                borderRadius: 10,
+                                textDecoration: "none",
+                                transition: "all 0.2s",
+                                background: isActive ? "rgba(255,92,0,0.12)" : "transparent",
+                                border: `1px solid ${isActive ? "rgba(255,92,0,0.25)" : "transparent"}`,
+                                color: isActive ? ORANGE : MUTED,
+                                fontWeight: 600,
+                                fontSize: 14,
+                                whiteSpace: "nowrap",
+                                overflow: "hidden",
+                            }}
+                            onMouseEnter={(e) => { if (!isActive) { e.currentTarget.style.background = SURFACE; e.currentTarget.style.color = TEXT; } }}
+                            onMouseLeave={(e) => { if (!isActive) { e.currentTarget.style.background = "transparent"; e.currentTarget.style.color = MUTED; } }}
                         >
-                            <item.icon className={cn("w-5 h-5 shrink-0 transition-transform group-hover:scale-110", isActive && "text-primary")} />
-                            {!collapsed && <span className="font-bold text-[14px]">{item.name}</span>}
+                            <item.icon style={{ width: 18, height: 18, flexShrink: 0 }} />
+                            {!collapsed && <span>{item.name}</span>}
                         </Link>
                     );
                 })}
             </nav>
 
-            {/* User / Bottom */}
-            <div className="p-4 border-t border-border/50 space-y-4">
+            {/* Bottom */}
+            <div style={{ padding: 12, borderTop: `1px solid ${BORDER}`, display: "flex", flexDirection: "column", gap: 8 }}>
                 {!collapsed && (
-                    <div className="p-4 bg-surface rounded-2xl border border-border/50 group hover:border-primary/50 transition-colors">
-                        <div className="flex items-center gap-3 mb-3">
-                            <div className="w-8 h-8 rounded-full bg-primary/20 flex items-center justify-center text-primary font-bold">H</div>
-                            <div className="overflow-hidden">
-                                <p className="text-white text-xs font-bold truncate">Harsh M.</p>
-                                <span className="text-[10px] text-primary font-black uppercase tracking-widest bg-primary/10 px-1.5 py-0.5 rounded leading-none">Pro User</span>
+                    <div style={{ padding: 14, background: SURFACE, borderRadius: 12, border: `1px solid ${BORDER}`, marginBottom: 4 }}>
+                        <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 8 }}>
+                            <div style={{ width: 32, height: 32, borderRadius: "50%", background: "rgba(255,92,0,0.15)", display: "flex", alignItems: "center", justifyContent: "center", fontWeight: 700, color: ORANGE, fontSize: 14 }}>H</div>
+                            <div style={{ overflow: "hidden" }}>
+                                <p style={{ fontSize: 13, fontWeight: 700, color: TEXT, margin: 0, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>Harsh M.</p>
+                                <span style={{ fontSize: 10, background: "rgba(255,92,0,0.15)", color: ORANGE, padding: "1px 6px", borderRadius: 4, fontWeight: 700, display: "inline-block" }}>PRO</span>
                             </div>
                         </div>
-                        <p className="text-[10px] text-text-muted italic leading-relaxed">
-                            Target: SWE L4 @ Google
-                        </p>
+                        <p style={{ fontSize: 11, color: DIM, margin: 0, fontStyle: "italic" }}>Target: SWE L4 @ Google</p>
                     </div>
                 )}
 
                 <button
                     onClick={() => setCollapsed(!collapsed)}
-                    className="w-full flex items-center justify-center p-2 text-text-muted hover:text-white hover:bg-surface rounded-lg transition-all"
+                    style={{ width: "100%", display: "flex", alignItems: "center", justifyContent: "center", padding: "8px", background: "transparent", border: `1px solid ${BORDER}`, borderRadius: 8, cursor: "pointer", color: MUTED, transition: "all 0.2s" }}
+                    onMouseEnter={(e) => { e.currentTarget.style.background = SURFACE; e.currentTarget.style.color = TEXT; }}
+                    onMouseLeave={(e) => { e.currentTarget.style.background = "transparent"; e.currentTarget.style.color = MUTED; }}
                 >
-                    <ChevronRight className={cn("w-5 h-5 transition-transform duration-300", !collapsed && "rotate-180")} />
+                    <ChevronRight style={{ width: 16, height: 16, transform: `rotate(${collapsed ? 0 : 180}deg)`, transition: "transform 0.3s" }} />
                 </button>
 
-                <button className="w-full flex items-center gap-3 px-3 py-3 rounded-xl text-text-muted hover:bg-error/10 hover:text-error transition-all overflow-hidden whitespace-nowrap">
-                    <LogOut className="w-5 h-5 shrink-0" />
-                    {!collapsed && <span className="font-bold text-[14px]">Log Out</span>}
+                <button style={{ width: "100%", display: "flex", alignItems: "center", gap: 10, padding: "10px 12px", background: "transparent", border: "none", borderRadius: 10, cursor: "pointer", color: MUTED, fontWeight: 600, fontSize: 14, transition: "all 0.2s" }}
+                    onMouseEnter={(e) => { e.currentTarget.style.background = "rgba(239,68,68,0.08)"; e.currentTarget.style.color = "#EF4444"; }}
+                    onMouseLeave={(e) => { e.currentTarget.style.background = "transparent"; e.currentTarget.style.color = MUTED; }}>
+                    <LogOut style={{ width: 18, height: 18, flexShrink: 0 }} />
+                    {!collapsed && <span>Log Out</span>}
                 </button>
             </div>
         </aside>

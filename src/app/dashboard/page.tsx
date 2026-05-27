@@ -3,9 +3,9 @@ import { DashboardContent } from "@/components/dashboard/DashboardContent";
 
 export default function DashboardPage() {
     return (
-        <div className="min-h-screen bg-background">
+        <div style={{ minHeight: "100vh", background: "#0A0A0A", display: "flex" }}>
             <Sidebar />
-            <main className="lg:pl-64 transition-all duration-300">
+            <main style={{ flex: 1, paddingLeft: 240, minHeight: "100vh", transition: "padding-left 0.3s" }}>
                 <DashboardContent />
             </main>
         </div>
