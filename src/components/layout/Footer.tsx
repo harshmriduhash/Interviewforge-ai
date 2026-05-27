@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { Mic, Twitter, Linkedin, Github } from "lucide-react";
+import { Mic } from "lucide-react";
 
 export function Footer() {
     return (
