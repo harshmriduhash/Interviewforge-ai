@@ -1,0 +1,185 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id                  String    @id @default(uuid())
+  email               String    @unique
+  emailVerified       Boolean   @default(false)
+  name                String?
+  avatarUrl           String?
+  passwordHash        String?   // null for OAuth-only accounts
+  authProvider        String    @default("email") // email | google | github
+  tier                String    @default("free") // free | pro | team
+  stripeCustomerId    String?   @unique
+  onboardingCompleted Boolean   @default(false)
+  targetRole          String?
+  experienceLevel     String?
+  interviewTimeline   String?
+  createdAt           DateTime  @default(now())
+  updatedAt           DateTime  @updatedAt
+  lastActiveAt        DateTime?
+  deletedAt           DateTime? // soft delete
+
+  sessions            Session[]
+  userProgress        UserProgress?
+  refreshTokens       RefreshToken[]
+  subscription        Subscription?
+
+  @@map("users")
+}
+
+model Session {
+  id                  String    @id @default(uuid())
+  userId              String
+  companyId           String?
+  roleId              String?
+  roundType           String    // algorithms | system_design | behavioral | mixed
+  difficulty          String    // easy | medium | hard | uber_hard
+  status              String    @default("pending") // pending | active | completed | abandoned
+  startedAt           DateTime?
+  endedAt             DateTime?
+  durationSeconds     Int?
+  questionsAsked      Int       @default(0)
+  overallScore        Decimal?  @db.Decimal(5, 2)
+  scoreTechnical      Decimal?  @db.Decimal(5, 2)
+  scoreCommunication  Decimal?  @db.Decimal(5, 2)
+  scoreStructure      Decimal?  @db.Decimal(5, 2)
+  scoreDepth          Decimal?  @db.Decimal(5, 2)
+  scoreConfidence     Decimal?  @db.Decimal(5, 2)
+  scoreFillerWords    Decimal?  @db.Decimal(5, 2)
+  scoreResponseTime   Decimal?  @db.Decimal(5, 2)
+  transcriptUrl       String?   // S3 URL of full transcript
+  reportUrl           String?   // S3 URL of PDF report
+  createdAt           DateTime  @default(now())
+
+  user                User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  company             Company?  @relation(fields: [companyId], references: [id])
+  exchanges           SessionExchange[]
+
+  @@map("sessions")
+}
+
+model SessionExchange {
+  id                   String    @id @default(uuid())
+  sessionId            String
+  questionId           String?
+  exchangeOrder        Int
+  aiQuestion           String
+  userAnswerText       String?
+  userAnswerAudioUrl   String?
+  scoreTechnical       Decimal?  @db.Decimal(5, 2)
+  scoreCommunication   Decimal?  @db.Decimal(5, 2)
+  scoreStructure       Decimal?  @db.Decimal(5, 2)
+  aiFeedback           String?
+  modelAnswer          String?
+  isFollowup           Boolean   @default(false)
+  thinkingTimeSeconds  Int?
+  responseTimeSeconds  Int?
+  fillerWordCount      Int       @default(0)
+  fillerWordsDetail    Json?
+  createdAt            DateTime  @default(now())
+
+  session              Session   @relation(fields: [sessionId], references: [id], onDelete: Cascade)
+  question             Question? @relation(fields: [questionId], references: [id])
+
+  @@map("session_exchanges")
+}
+
+model Question {
+  id                  String    @id @default(uuid())
+  companyId           String?
+  title               String
+  body                String
+  roundType           String?
+  difficulty          String?
+  topicTags           String[]
+  roleLevels          String[] // ["IC3","IC4","IC5"]
+  embedding           Unsupported("vector(1536)")? // Requires pgvector
+  source              String    @default("curated") // curated | community | ai_generated
+  verified            Boolean   @default(false)
+  useCount            Int       @default(0)
+  avgScore            Decimal?  @db.Decimal(5, 2)
+  createdAt           DateTime  @default(now())
+
+  company             Company?  @relation(fields: [companyId], references: [id])
+  exchanges           SessionExchange[]
+
+  @@map("questions")
+}
+
+model UserProgress {
+  id                  String    @id @default(uuid())
+  userId              String    @unique
+  readinessScore      Decimal   @default(0) @db.Decimal(5, 2)
+  totalSessions       Int       @default(0)
+  totalDurationMinutes Int      @default(0)
+  currentStreak       Int       @default(0)
+  longestStreak       Int       @default(0)
+  lastSessionAt       DateTime?
+  weakTopics          String[]
+  strongTopics        String[]
+  questionsSeen       String[]  // IDs to deduplicate in RAG
+  readinessByCompany  Json?     // { "google": 72, "stripe": 65 }
+  dimensionHistory     Json?     // { "technical": [54,60,68,74], ... }
+  updatedAt           DateTime  @updatedAt
+
+  user                User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("user_progress")
+}
+
+model Company {
+  id                  String    @id @default(uuid())
+  name                String    @unique
+  slug                String    @unique
+  logoUrl             String?
+  tier                String?   // faang | tier1 | startup | enterprise
+  questionCount       Int       @default(0)
+  isActive            Boolean   @default(true)
+
+  sessions            Session[]
+  questions           Question[]
+
+  @@map("companies")
+}
+
+model Subscription {
+  id                    String    @id @default(uuid())
+  userId                String    @unique
+  stripeSubscriptionId  String?   @unique
+  stripePriceId         String?
+  status                String?   // active | cancelled | past_due | trialing
+  currentPeriodStart    DateTime?
+  currentPeriodEnd      DateTime?
+  cancelAtPeriodEnd     Boolean   @default(false)
+  cancelledAt           DateTime?
+  createdAt             DateTime  @default(now())
+
+  user                  User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("subscriptions")
+}
+
+model RefreshToken {
+  id          String    @id @default(uuid())
+  userId      String
+  tokenHash    String    @unique
+  deviceInfo  String?
+  ipAddress   String?   // Stored as string, manually handle INET types if needed
+  expiresAt   DateTime
+  revokedAt   DateTime?
+  createdAt   DateTime  @default(now())
+
+  user        User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("refresh_tokens")
+}
