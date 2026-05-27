@@ -54,7 +54,7 @@ export function DashboardContent() {
                 {[
                     { label: 'FAANG Readiness', value: '72%', icon: Trophy, trend: '+8%' },
                     { label: 'Total Sessions', value: '24', icon: Star, trend: '+2' },
-                    { label: 'Avg Session Score', value: '78%', icon: BarChart, trend: '+4%' },
+                    { label: 'Avg Session Score', value: '78%', icon: BarChart3, trend: '+4%' },
                     { label: 'Longest Streak', value: '15d', icon: Clock, trend: 'Best' }
                 ].map((stat, i) => (
                     <motion.div
