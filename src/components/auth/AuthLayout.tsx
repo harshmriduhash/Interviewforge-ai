@@ -4,6 +4,13 @@ import { motion } from "framer-motion";
 import { Mic, CheckCircle2 } from "lucide-react";
 import Link from "next/link";
 
+const ORANGE = "#FF5C00";
+const BG = "#0A0A0A";
+const BORDER = "#2E2E2E";
+const TEXT = "#F5F5F5";
+const MUTED = "#A3A3A3";
+const SUCCESS = "#22C55E";
+
 const HIGHLIGHTS = [
     "Voice-first adaptive interviews",
     "FAANG-level technical scoring",
@@ -13,62 +20,56 @@ const HIGHLIGHTS = [
 
 export function AuthLayout({ children, title, subtitle }: { children: React.ReactNode; title: string; subtitle: string }) {
     return (
-        <div className="min-h-screen flex bg-background">
-            {/* Left Panel - Hero/Highlights */}
-            <div className="hidden lg:flex w-[45%] bg-[#0D0D0D] border-r border-border p-12 flex-col justify-between relative overflow-hidden">
-                <div className="absolute top-0 right-0 w-full h-full opacity-10">
-                    <div className="absolute inset-0 bg-[radial-gradient(circle_at_100%_0%,var(--color-primary),transparent)]" />
+        <div style={{ minHeight: "100vh", display: "flex", background: BG }}>
+            {/* Left Panel */}
+            <div style={{ display: "none", width: "45%", background: "#0D0D0D", borderRight: `1px solid ${BORDER}`, padding: 48, flexDirection: "column", justifyContent: "space-between", position: "relative", overflow: "hidden" }} className="hidden lg:flex lg:flex-col">
+                <div style={{ position: "absolute", top: 0, right: 0, width: "100%", height: "100%", opacity: 0.15, pointerEvents: "none" }}>
+                    <div style={{ position: "absolute", top: 0, right: 0, width: 400, height: 400, background: `radial-gradient(circle at top right, ${ORANGE}, transparent)`, borderRadius: "50%" }} />
                 </div>
 
-                <div className="relative z-10">
-                    <Link href="/" className="flex items-center gap-2 mb-20 group">
-                        <Mic className="text-primary w-8 h-8 group-hover:scale-110 transition-transform" />
-                        <span className="text-2xl font-bold text-white tracking-tighter italic">InterviewForge</span>
-                        <span className="bg-primary px-1.5 py-0.5 rounded text-[12px] font-black text-white leading-none">AI</span>
+                <div style={{ position: "relative", zIndex: 10 }}>
+                    <Link href="/" style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 80, textDecoration: "none" }}>
+                        <Mic style={{ color: ORANGE, width: 32, height: 32 }} />
+                        <span style={{ fontSize: 22, fontWeight: 800, color: TEXT, fontStyle: "italic", textTransform: "uppercase", letterSpacing: "-0.5px" }}>InterviewForge</span>
+                        <span style={{ background: ORANGE, padding: "2px 6px", borderRadius: 4, fontSize: 11, fontWeight: 900, color: "#fff" }}>AI</span>
                     </Link>
 
-                    <div className="space-y-8">
-                        <motion.h2
-                            initial={{ opacity: 0, x: -20 }}
-                            animate={{ opacity: 1, x: 0 }}
-                            className="text-4xl font-extrabold text-white leading-[1.2]"
-                        >
-                            Practice Until You <br /> <span className="text-primary italic">Can't Fail.</span>
+                    <div style={{ display: "flex", flexDirection: "column", gap: 32 }}>
+                        <motion.h2 initial={{ opacity: 0, x: -20 }} animate={{ opacity: 1, x: 0 }} style={{ fontSize: 40, fontWeight: 900, color: TEXT, lineHeight: 1.2, letterSpacing: "-1.5px" }}>
+                            Practice Until You <br /><em style={{ color: ORANGE }}>Can't Fail.</em>
                         </motion.h2>
 
-                        <div className="space-y-4">
+                        <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
                             {HIGHLIGHTS.map((item, i) => (
-                                <motion.div
-                                    key={item}
-                                    initial={{ opacity: 0, x: -10 }}
-                                    animate={{ opacity: 1, x: 0 }}
-                                    transition={{ delay: i * 0.1 }}
-                                    className="flex items-center gap-3 text-text-secondary"
-                                >
-                                    <CheckCircle2 className="w-5 h-5 text-success" />
-                                    <span className="text-lg">{item}</span>
+                                <motion.div key={item} initial={{ opacity: 0, x: -10 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: i * 0.1 }} style={{ display: "flex", alignItems: "center", gap: 12 }}>
+                                    <CheckCircle2 style={{ width: 20, height: 20, color: SUCCESS, flexShrink: 0 }} />
+                                    <span style={{ fontSize: 16, color: MUTED }}>{item}</span>
                                 </motion.div>
                             ))}
                         </div>
                     </div>
                 </div>
 
-                <div className="relative z-10 pt-12 border-t border-border">
-                    <p className="text-text-muted text-sm italic">
+                <div style={{ position: "relative", zIndex: 10, paddingTop: 40, borderTop: `1px solid ${BORDER}` }}>
+                    <p style={{ fontSize: 14, color: MUTED, fontStyle: "italic", lineHeight: 1.7 }}>
                         "The AI pushed back on my edge cases just like my Google interviewer did. I was ready."
                     </p>
-                    <p className="text-white font-bold text-sm mt-2">
-                        — Alex W., Senior Engineer @ Google
-                    </p>
+                    <p style={{ fontSize: 14, color: TEXT, fontWeight: 700, marginTop: 8 }}>— Alex W., Senior Engineer @ Google</p>
                 </div>
             </div>
 
             {/* Right Panel - Form */}
-            <div className="flex-1 flex flex-col justify-center items-center p-8 bg-surface/20">
-                <div className="w-full max-w-[440px] space-y-8">
-                    <div className="text-center lg:text-left">
-                        <h1 className="text-3xl font-black text-white mb-2">{title}</h1>
-                        <p className="text-text-secondary">{subtitle}</p>
+            <div style={{ flex: 1, display: "flex", flexDirection: "column", justifyContent: "center", alignItems: "center", padding: 32, background: "rgba(20,20,20,0.3)" }}>
+                <div style={{ width: "100%", maxWidth: 440, display: "flex", flexDirection: "column", gap: 24 }}>
+                    {/* Mobile Logo */}
+                    <div className="flex lg:hidden" style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 8 }}>
+                        <Mic style={{ color: ORANGE, width: 24, height: 24 }} />
+                        <span style={{ fontSize: 18, fontWeight: 800, color: TEXT, fontStyle: "italic", textTransform: "uppercase" }}>InterviewForge</span>
+                        <span style={{ background: ORANGE, padding: "1px 5px", borderRadius: 4, fontSize: 10, fontWeight: 900, color: "#fff" }}>AI</span>
+                    </div>
+                    <div>
+                        <h1 style={{ fontSize: 32, fontWeight: 900, color: TEXT, margin: "0 0 8px", letterSpacing: "-1px" }}>{title}</h1>
+                        <p style={{ fontSize: 16, color: MUTED, margin: 0 }}>{subtitle}</p>
                     </div>
                     {children}
                 </div>
