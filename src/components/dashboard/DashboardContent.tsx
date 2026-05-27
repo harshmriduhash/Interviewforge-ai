@@ -2,7 +2,7 @@
 
 import { motion } from "framer-motion";
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, RadarChart, PolarGrid, PolarAngleAxis, Radar, AreaChart, Area } from "recharts";
-import { Flame, Star, Trophy, Clock, Play } from "lucide-react";
+import { Flame, Star, Trophy, Clock, Play, BarChart3 } from "lucide-react";
 import Link from "next/link";
 
 const READINESS_DATA = [

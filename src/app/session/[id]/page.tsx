@@ -6,7 +6,7 @@ import { useState, useEffect } from "react";
 import { cn } from "@/lib/utils";
 import Link from "next/link";
 
-export function SessionInterface() {
+export default function SessionInterface() {
     const [isThinking, setIsThinking] = useState(false);
     const [transcript, setTranscript] = useState("Okay, let's dive into the data consistency model. For a globally distributed news feed, why would you choose eventual consistency over strong consistency?");
     const [userText, setUserText] = useState("");

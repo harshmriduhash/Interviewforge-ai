@@ -23,7 +23,7 @@ const FILLER_DATA = [
     { word: 'actually', count: 3 },
 ];
 
-export function ReportInterface() {
+export default function ReportInterface() {
     const overallScore = 78;
 
     return (
