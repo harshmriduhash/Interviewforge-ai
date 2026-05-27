@@ -27,11 +27,11 @@ const SKILL_DATA = [
 
 export function DashboardContent() {
     return (
-        <div className="p-8 lg:p-12 space-y-10 max-w-[1600px] mx-auto">
+        <div className="flex-1 min-h-screen p-8 lg:p-12 space-y-10 max-w-[1600px] mx-auto w-full">
             {/* Zone 1 - Welcome Header */}
             <div className="flex flex-col md:flex-row md:items-center justify-between gap-6">
                 <div className="space-y-1">
-                    <h1 className="text-3xl font-black text-white">Good morning, Harsh.</h1>
+                    <h1 className="text-3xl font-black text-white tracking-tight">Good morning, Harsh.</h1>
                     <p className="text-text-secondary text-lg">Ready for your next session?</p>
                 </div>
                 <div className="flex items-center gap-4">
@@ -41,7 +41,7 @@ export function DashboardContent() {
                     </div>
                     <Link
                         href="/session/new"
-                        className="px-6 py-3 bg-primary hover:bg-primary-hover text-white font-bold rounded-xl shadow-lg shadow-primary/20 transition-all flex items-center gap-2"
+                        className="px-6 py-3 bg-primary hover:bg-primary-hover text-white font-bold rounded-xl shadow-lg shadow-primary/20 transition-all flex items-center gap-2 no-underline"
                     >
                         <Play className="w-4 h-4 fill-white" />
                         Start Session
@@ -86,12 +86,12 @@ export function DashboardContent() {
                         <span className="text-text-muted text-xs font-bold uppercase tracking-widest">Last 7 Days</span>
                     </div>
                     <div className="h-[300px] w-full">
-                        <ResponsiveContainer width="100%" height="100%">
+                        <ResponsiveContainer width="99%" height={300}>
                             <AreaChart data={READINESS_DATA}>
                                 <defs>
                                     <linearGradient id="colorScore" x1="0" y1="0" x2="0" y2="1">
-                                        <stop offset="5%" stopColor="var(--color-primary)" stopOpacity={0.3} />
-                                        <stop offset="95%" stopColor="var(--color-primary)" stopOpacity={0} />
+                                        <stop offset="5%" stopColor="rgb(var(--color-primary))" stopOpacity={0.3} />
+                                        <stop offset="95%" stopColor="rgb(var(--color-primary))" stopOpacity={0} />
                                     </linearGradient>
                                 </defs>
                                 <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#2E2E2E" />
@@ -99,9 +99,9 @@ export function DashboardContent() {
                                 <YAxis hide />
                                 <Tooltip
                                     contentStyle={{ backgroundColor: '#1A1A1A', border: '1px solid #2E2E2E', borderRadius: '12px' }}
-                                    itemStyle={{ color: 'var(--color-primary)', fontWeight: 'bold' }}
+                                    itemStyle={{ color: 'rgb(var(--color-primary))', fontWeight: 'bold' }}
                                 />
-                                <Area type="monotone" dataKey="score" stroke="var(--color-primary)" strokeWidth={3} fillOpacity={1} fill="url(#colorScore)" />
+                                <Area type="monotone" dataKey="score" stroke="rgb(var(--color-primary))" strokeWidth={3} fillOpacity={1} fill="url(#colorScore)" />
                             </AreaChart>
                         </ResponsiveContainer>
                     </div>
@@ -113,11 +113,11 @@ export function DashboardContent() {
                         <span className="text-text-muted text-xs font-bold uppercase tracking-widest">Core Dimensions</span>
                     </div>
                     <div className="h-[300px] w-full">
-                        <ResponsiveContainer width="100%" height="100%">
+                        <ResponsiveContainer width="99%" height={300}>
                             <RadarChart cx="50%" cy="50%" outerRadius="80%" data={SKILL_DATA}>
                                 <PolarGrid stroke="#2E2E2E" />
                                 <PolarAngleAxis dataKey="subject" stroke="#525252" fontSize={10} tick={{ fill: "#A3A3A3", fontWeight: 'bold', textAnchor: 'middle' }} />
-                                <Radar name="Skills" dataKey="A" stroke="var(--color-primary)" fill="var(--color-primary)" fillOpacity={0.5} />
+                                <Radar name="Skills" dataKey="A" stroke="rgb(var(--color-primary))" fill="rgb(var(--color-primary))" fillOpacity={0.5} />
                             </RadarChart>
                         </ResponsiveContainer>
                     </div>
@@ -134,8 +134,8 @@ export function DashboardContent() {
                             <h4 className="text-white font-black text-xl">System Design Round</h4>
                             <p className="text-white/80 text-sm">Targeting: Meta (L5)</p>
                         </div>
-                        <div className="flex items-center gap-2 text-white font-bold text-xs">
-                            <span className="bg-white/20 px-2 py-1 rounded">Difficulty: Uber Hard</span>
+                        <div className="flex items-center gap-2 text-white font-bold text-[10px] uppercase tracking-wider">
+                            <span className="bg-white/20 px-2 py-1 rounded">Uber Hard</span>
                             <span className="bg-white/20 px-2 py-1 rounded">45 Mins</span>
                         </div>
                         <button className="w-full py-3 bg-white text-primary font-black rounded-xl hover:scale-[1.02] transition-transform">
@@ -147,7 +147,7 @@ export function DashboardContent() {
                 <div className="lg:col-span-2 space-y-6">
                     <div className="flex items-center justify-between">
                         <h3 className="text-white font-bold text-lg">Recent Sessions</h3>
-                        <Link href="/dashboard/sessions" className="text-primary text-xs font-bold hover:underline">View All History</Link>
+                        <Link href="/dashboard/sessions" className="text-primary text-xs font-bold hover:underline no-underline">View All History</Link>
                     </div>
                     <div className="glass overflow-hidden rounded-2xl">
                         <table className="w-full text-left">
@@ -160,13 +160,13 @@ export function DashboardContent() {
                                     <th className="px-6 py-4 text-right">Action</th>
                                 </tr>
                             </thead>
-                            <tbody className="bg-surface/30">
+                            <tbody className="bg-surface/30 text-sm">
                                 {[
                                     { company: 'Google', round: 'Algorithms', score: '84%', status: 'Completed', logo: 'G' },
                                     { company: 'Stripe', round: 'System Design', score: '72%', status: 'Completed', logo: 'S' },
                                     { company: 'Amazon', round: 'Behavioral', score: '91%', status: 'Completed', logo: 'A' },
                                 ].map((s, i) => (
-                                    <tr key={i} className="border-b border-border/50 text-[13px] hover:bg-surface-2 transition-colors group">
+                                    <tr key={i} className="border-b border-border/50 hover:bg-surface-2 transition-colors group">
                                         <td className="px-6 py-4 flex items-center gap-3">
                                             <div className="w-6 h-6 rounded bg-white/10 flex items-center justify-center font-bold text-[10px]">{s.logo}</div>
                                             <span className="text-white font-bold">{s.company}</span>
