@@ -2,74 +2,80 @@
 
 import Link from "next/link";
 import { Mic } from "lucide-react";
-import { cn } from "@/lib/utils";
 import { useState, useEffect } from "react";
 
 const NAV_LINKS = [
     { name: "Features", href: "#features" },
     { name: "How it Works", href: "#how-it-works" },
-    { name: "Pricing", href: "/pricing" },
+    { name: "Pricing", href: "#pricing" },
     { name: "Company Prep", href: "/companies" },
-    { name: "Blog", href: "/blog" },
 ];
 
 export function Navbar() {
     const [scrolled, setScrolled] = useState(false);
 
     useEffect(() => {
-        const handleScroll = () => {
-            setScrolled(window.scrollY > 20);
-        };
+        const handleScroll = () => setScrolled(window.scrollY > 20);
         window.addEventListener("scroll", handleScroll);
         return () => window.removeEventListener("scroll", handleScroll);
     }, []);
 
     return (
         <nav
-            className={cn(
-                "fixed top-0 left-0 right-0 z-[1000] h-16 transition-all duration-300",
-                scrolled ? "glass bg-opacity-95" : "bg-transparent border-transparent"
-            )}
+            style={{
+                position: "fixed",
+                top: 0,
+                left: 0,
+                right: 0,
+                zIndex: 1000,
+                height: 64,
+                transition: "all 0.3s",
+                background: scrolled ? "rgba(10,10,10,0.9)" : "transparent",
+                backdropFilter: scrolled ? "blur(20px)" : "none",
+                borderBottom: scrolled ? "1px solid #2E2E2E" : "1px solid transparent",
+            }}
         >
-            <div className="max-w-7xl mx-auto h-full px-4 flex items-center justify-between">
+            <div style={{ maxWidth: 1280, margin: "0 auto", height: "100%", padding: "0 24px", display: "flex", alignItems: "center", justifyContent: "space-between" }}>
                 {/* Logo */}
-                <Link href="/" className="flex items-center gap-2 group">
-                    <Mic className="text-primary w-7 h-7 group-hover:scale-110 transition-transform" />
-                    <span className="text-xl font-bold text-white tracking-tight">
-                        InterviewForge
-                    </span>
-                    <span className="bg-primary px-1.5 py-0.5 rounded text-[11px] font-black text-white leading-none">
-                        AI
-                    </span>
+                <Link href="/" style={{ display: "flex", alignItems: "center", gap: 8, textDecoration: "none" }}>
+                    <Mic style={{ color: "#FF5C00", width: 28, height: 28 }} />
+                    <span style={{ fontSize: 20, fontWeight: 800, color: "#F5F5F5", letterSpacing: "-0.5px" }}>InterviewForge</span>
+                    <span style={{ background: "#FF5C00", padding: "2px 6px", borderRadius: 4, fontSize: 11, fontWeight: 900, color: "#fff", lineHeight: 1 }}>AI</span>
                 </Link>
 
                 {/* Desktop Nav */}
-                <div className="hidden md:flex items-center gap-8">
+                <div style={{ display: "flex", alignItems: "center", gap: 32 }} className="hidden md:flex">
                     {NAV_LINKS.map((link) => (
                         <Link
                             key={link.name}
                             href={link.href}
-                            className="text-[15px] font-medium text-text-secondary hover:text-text-primary transition-colors relative group"
+                            style={{ fontSize: 15, fontWeight: 500, color: "#A3A3A3", textDecoration: "none", transition: "color 0.2s" }}
+                            onMouseEnter={(e) => (e.currentTarget.style.color = "#F5F5F5")}
+                            onMouseLeave={(e) => (e.currentTarget.style.color = "#A3A3A3")}
                         >
                             {link.name}
-                            <span className="absolute -bottom-1 left-0 w-0 h-[2px] bg-primary transition-all group-hover:w-full" />
                         </Link>
                     ))}
                 </div>
 
-                {/* CTA Zone */}
-                <div className="flex items-center gap-4">
+                {/* CTA */}
+                <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
                     <Link
                         href="/auth/login"
-                        className="hidden sm:block text-[15px] text-white px-4 py-2 border border-border rounded-lg hover:border-primary transition-colors"
+                        style={{ fontSize: 14, fontWeight: 600, color: "#F5F5F5", padding: "8px 16px", border: "1px solid #2E2E2E", borderRadius: 8, textDecoration: "none", transition: "border-color 0.2s" }}
+                        className="hidden sm:block"
+                        onMouseEnter={(e) => (e.currentTarget.style.borderColor = "#FF5C00")}
+                        onMouseLeave={(e) => (e.currentTarget.style.borderColor = "#2E2E2E")}
                     >
                         Login
                     </Link>
                     <Link
                         href="/auth/signup"
-                        className="text-[15px] font-bold bg-primary hover:bg-primary-hover text-white px-5 py-2 rounded-lg transition-colors whitespace-nowrap"
+                        style={{ fontSize: 14, fontWeight: 700, background: "#FF5C00", color: "#fff", padding: "10px 20px", borderRadius: 8, textDecoration: "none", transition: "background 0.2s", whiteSpace: "nowrap" }}
+                        onMouseEnter={(e) => (e.currentTarget.style.background = "#E64D00")}
+                        onMouseLeave={(e) => (e.currentTarget.style.background = "#FF5C00")}
                     >
-                        Start Free
+                        Start Free →
                     </Link>
                 </div>
             </div>
