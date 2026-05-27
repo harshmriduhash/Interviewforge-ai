@@ -2,62 +2,64 @@
 
 import { motion } from "framer-motion";
 
+const ORANGE = "#FF5C00";
+const BORDER = "#2E2E2E";
+const TEXT = "#F5F5F5";
+const MUTED = "#A3A3A3";
+const DIM = "#525252";
+
 const STEPS = [
     {
         number: "01",
         title: "Choose your target",
-        description: "Select company (Google, Meta, Stripe etc), role (SWE L4, Staff Eng, etc), round type (LC, System Design, Behavioral).",
+        description: "Pick company (Google, Meta, Stripe), role (SWE L4, Staff), and round type (Algorithms, System Design, Behavioral).",
         sub: "Our RAG engine pulls real questions from that company's actual interview patterns.",
     },
     {
         number: "02",
         title: "Speak. The AI listens, adapts, pushes back",
-        description: "Deepgram transcribes you in real time. Claude AI evaluates your answer while ElevenLabs speaks the next question back.",
+        description: "Deepgram transcribes you in real time. Claude AI evaluates your answer while ElevenLabs speaks the follow-up.",
         sub: "It interrupts if your structure is off. It asks follow-ups. It acts like a real interviewer.",
     },
     {
         number: "03",
         title: "Get your report card. Track your arc.",
-        description: "Post-session report: 7-dimension score breakdown, filler word map, areas to re-study, model answer comparison.",
+        description: "7-dimension score breakdown, filler word map, areas to re-study, and a model answer comparison.",
         sub: "Your readiness score improves with every session. We remember every weakness.",
     },
 ];
 
 export function HowItWorks() {
     return (
-        <section id="how-it-works" className="py-24 bg-surface/30">
-            <div className="max-w-4xl mx-auto px-4">
-                <div className="text-center mb-20 space-y-4">
-                    <h2 className="text-4xl md:text-5xl font-extrabold text-white">
+        <section id="how-it-works" style={{ padding: "100px 24px", background: "rgba(20,20,20,0.5)", borderTop: `1px solid ${BORDER}` }}>
+            <div style={{ maxWidth: 900, margin: "0 auto" }}>
+                <div style={{ textAlign: "center", marginBottom: 80 }}>
+                    <p style={{ fontSize: 12, fontWeight: 700, color: ORANGE, letterSpacing: "0.2em", textTransform: "uppercase", marginBottom: 16 }}>HOW IT WORKS</p>
+                    <h2 style={{ fontSize: "clamp(28px, 5vw, 52px)", fontWeight: 900, color: TEXT, letterSpacing: "-1.5px", margin: 0 }}>
                         Three Steps. Infinite Practice. One Offer.
                     </h2>
                 </div>
 
-                <div className="relative space-y-24">
-                    {/* Vertical Line */}
-                    <div className="absolute left-6 md:left-1/2 top-0 bottom-0 w-px bg-border -translate-x-1/2 hidden md:block" />
-
+                <div style={{ position: "relative", display: "flex", flexDirection: "column", gap: 48 }}>
                     {STEPS.map((step, index) => (
                         <motion.div
                             key={step.number}
-                            initial={{ opacity: 0, x: index % 2 === 0 ? -20 : 20 }}
+                            initial={{ opacity: 0, x: index % 2 === 0 ? -24 : 24 }}
                             whileInView={{ opacity: 1, x: 0 }}
                             transition={{ duration: 0.5 }}
                             viewport={{ once: true }}
-                            className={`relative flex items-start md:items-center gap-8 ${index % 2 === 0 ? "md:flex-row" : "md:flex-row-reverse"
-                                }`}
+                            style={{ display: "flex", gap: 32, alignItems: "flex-start", flexDirection: index % 2 === 0 ? "row" : "row-reverse" }}
                         >
-                            {/* Number Circle */}
-                            <div className="relative z-10 w-12 h-12 rounded-full bg-primary flex items-center justify-center text-white font-black shrink-0 border-4 border-background md:absolute md:left-1/2 md:-translate-x-1/2">
+                            {/* Number */}
+                            <div style={{ flexShrink: 0, width: 64, height: 64, borderRadius: "50%", background: ORANGE, display: "flex", alignItems: "center", justifyContent: "center", color: "#fff", fontWeight: 900, fontSize: 18, boxShadow: `0 0 24px rgba(255,92,0,0.4)` }}>
                                 {step.number}
                             </div>
 
-                            {/* Content Card */}
-                            <div className={`flex-1 glass p-8 rounded-2xl md:w-[45%] ${index % 2 === 0 ? "md:text-right" : "md:text-left"
-                                }`}>
-                                <h3 className="text-2xl font-bold text-white mb-2">{step.title}</h3>
-                                <p className="text-text-primary mb-4">{step.description}</p>
-                                <p className="text-text-secondary text-sm italic">{step.sub}</p>
+                            {/* Content */}
+                            <div style={{ flex: 1, padding: 32, background: "rgba(20,20,20,0.7)", backdropFilter: "blur(16px)", border: `1px solid ${BORDER}`, borderRadius: 20 }}>
+                                <h3 style={{ fontSize: 22, fontWeight: 800, color: TEXT, marginBottom: 12 }}>{step.title}</h3>
+                                <p style={{ fontSize: 16, color: TEXT, marginBottom: 8, lineHeight: 1.7 }}>{step.description}</p>
+                                <p style={{ fontSize: 14, color: MUTED, fontStyle: "italic", lineHeight: 1.6 }}>{step.sub}</p>
                             </div>
                         </motion.div>
                     ))}
