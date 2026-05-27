@@ -1,7 +1,7 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { Mic, Building, BarChart3, Brain, 历史, Layout } from "lucide-react";
+import { Mic, Building, BarChart3, Brain, History, Layout } from "lucide-react";
 
 const FEATURES = [
     {
@@ -63,7 +63,7 @@ export function Features() {
                             <h3 className="text-xl font-bold text-white mb-3 group-hover:text-primary transition-colors">
                                 {feature.title}
                             </h3>
-                            <p className="text-text-secondary leading-relaxed">
+                            <p className="text-text-secondary leading-relaxed text-sm">
                                 {feature.description}
                             </p>
                         </motion.div>
