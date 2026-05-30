@@ -1,3 +1,5 @@
+"use client";
+
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { Mic, LayoutDashboard, History, BarChart2, BookOpen, Building2, FileText, Settings, LogOut, ChevronRight } from "lucide-react";
