@@ -102,7 +102,7 @@ model Question {
   difficulty          String?
   topicTags           String[]
   roleLevels          String[] // ["IC3","IC4","IC5"]
-  embedding           Unsupported("vector(1536)")? // Requires pgvector
+  // embedding           Unsupported("vector(1536)")? // Requires pgvector
   source              String    @default("curated") // curated | community | ai_generated
   verified            Boolean   @default(false)
   useCount            Int       @default(0)
