@@ -37,7 +37,7 @@ export function Navbar() {
                 borderBottom: scrolled ? "1px solid #2E2E2E" : "1px solid transparent",
             }}
         >
-            <div style={{ maxWidth: 1280, margin: "0 auto", height: "100%", padding: "0 24px", display: "flex", alignItems: "center", justifycontent: "space-between", justifyContent: "space-between" }}>
+            <div style={{ maxWidth: 1280, margin: "0 auto", height: "100%", padding: "0 24px", display: "flex", alignItems: "center", justifyContent: "space-between" }}>
                 {/* Logo */}
                 <Link href="/" style={{ display: "flex", alignItems: "center", gap: 8, textDecoration: "none" }}>
                     <Mic style={{ color: "#FF5C00", width: 28, height: 28 }} />
