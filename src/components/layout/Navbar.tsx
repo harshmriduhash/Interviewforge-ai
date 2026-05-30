@@ -3,16 +3,18 @@
 import Link from "next/link";
 import { Mic } from "lucide-react";
 import { useState, useEffect } from "react";
+import { useSession } from "next-auth/react";
 
 const NAV_LINKS = [
     { name: "Features", href: "#features" },
     { name: "How it Works", href: "#how-it-works" },
     { name: "Pricing", href: "#pricing" },
-    { name: "Company Prep", href: "/companies" },
+    { name: "Company Prep", href: "/dashboard/companies" },
 ];
 
 export function Navbar() {
     const [scrolled, setScrolled] = useState(false);
+    const { data: session, status } = useSession();
 
     useEffect(() => {
         const handleScroll = () => setScrolled(window.scrollY > 20);
@@ -35,7 +37,7 @@ export function Navbar() {
                 borderBottom: scrolled ? "1px solid #2E2E2E" : "1px solid transparent",
             }}
         >
-            <div style={{ maxWidth: 1280, margin: "0 auto", height: "100%", padding: "0 24px", display: "flex", alignItems: "center", justifyContent: "space-between" }}>
+            <div style={{ maxWidth: 1280, margin: "0 auto", height: "100%", padding: "0 24px", display: "flex", alignItems: "center", justifycontent: "space-between", justifyContent: "space-between" }}>
                 {/* Logo */}
                 <Link href="/" style={{ display: "flex", alignItems: "center", gap: 8, textDecoration: "none" }}>
                     <Mic style={{ color: "#FF5C00", width: 28, height: 28 }} />
@@ -60,23 +62,41 @@ export function Navbar() {
 
                 {/* CTA */}
                 <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
-                    <Link
-                        href="/auth/login"
-                        style={{ fontSize: 14, fontWeight: 600, color: "#F5F5F5", padding: "8px 16px", border: "1px solid #2E2E2E", borderRadius: 8, textDecoration: "none", transition: "border-color 0.2s" }}
-                        className="hidden sm:block"
-                        onMouseEnter={(e) => (e.currentTarget.style.borderColor = "#FF5C00")}
-                        onMouseLeave={(e) => (e.currentTarget.style.borderColor = "#2E2E2E")}
-                    >
-                        Login
-                    </Link>
-                    <Link
-                        href="/auth/signup"
-                        style={{ fontSize: 14, fontWeight: 700, background: "#FF5C00", color: "#fff", padding: "10px 20px", borderRadius: 8, textDecoration: "none", transition: "background 0.2s", whiteSpace: "nowrap" }}
-                        onMouseEnter={(e) => (e.currentTarget.style.background = "#E64D00")}
-                        onMouseLeave={(e) => (e.currentTarget.style.background = "#FF5C00")}
-                    >
-                        Start Free →
-                    </Link>
+                    {status === "authenticated" ? (
+                        <>
+                            <span style={{ fontSize: 13, color: "#A3A3A3", fontWeight: 600 }} className="hidden sm:inline-block">
+                                Welcome, <span style={{ color: "#F5F5F5" }}>{session?.user?.name || "Candidate"}</span>
+                            </span>
+                            <Link
+                                href="/dashboard"
+                                style={{ fontSize: 14, fontWeight: 700, background: "#FF5C00", color: "#fff", padding: "10px 20px", borderRadius: 8, textDecoration: "none", transition: "background 0.2s", whiteSpace: "nowrap" }}
+                                onMouseEnter={(e) => (e.currentTarget.style.background = "#E64D00")}
+                                onMouseLeave={(e) => (e.currentTarget.style.background = "#FF5C00")}
+                            >
+                                Dashboard →
+                            </Link>
+                        </>
+                    ) : (
+                        <>
+                            <Link
+                                href="/auth/login"
+                                style={{ fontSize: 14, fontWeight: 600, color: "#F5F5F5", padding: "8px 16px", border: "1px solid #2E2E2E", borderRadius: 8, textDecoration: "none", transition: "border-color 0.2s" }}
+                                className="hidden sm:block"
+                                onMouseEnter={(e) => (e.currentTarget.style.borderColor = "#FF5C00")}
+                                onMouseLeave={(e) => (e.currentTarget.style.borderColor = "#2E2E2E")}
+                            >
+                                Login
+                            </Link>
+                            <Link
+                                href="/auth/signup"
+                                style={{ fontSize: 14, fontWeight: 700, background: "#FF5C00", color: "#fff", padding: "10px 20px", borderRadius: 8, textDecoration: "none", transition: "background 0.2s", whiteSpace: "nowrap" }}
+                                onMouseEnter={(e) => (e.currentTarget.style.background = "#E64D00")}
+                                onMouseLeave={(e) => (e.currentTarget.style.background = "#FF5C00")}
+                            >
+                                Start Free →
+                            </Link>
+                        </>
+                    )}
                 </div>
             </div>
         </nav>

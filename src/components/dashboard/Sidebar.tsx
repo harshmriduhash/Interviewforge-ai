@@ -1,9 +1,8 @@
-"use client";
-
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { Mic, LayoutDashboard, History, BarChart2, BookOpen, Building2, FileText, Settings, LogOut, ChevronRight } from "lucide-react";
 import { useState } from "react";
+import { useSession, signOut } from "next-auth/react";
 
 const ORANGE = "#FF5C00";
 const BG = "#0A0A0A";
@@ -26,6 +25,12 @@ const NAV_ITEMS = [
 export function Sidebar() {
     const pathname = usePathname();
     const [collapsed, setCollapsed] = useState(false);
+    const { data: session } = useSession();
+
+    const userName = session?.user?.name || "Candidate";
+    const userInitials = userName.charAt(0).toUpperCase();
+    const targetRole = (session?.user as any)?.targetRole || "SWE";
+    const tier = (session?.user as any)?.tier || "FREE";
 
     return (
         <aside
@@ -96,13 +101,13 @@ export function Sidebar() {
                 {!collapsed && (
                     <div style={{ padding: 14, background: SURFACE, borderRadius: 12, border: `1px solid ${BORDER}`, marginBottom: 4 }}>
                         <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 8 }}>
-                            <div style={{ width: 32, height: 32, borderRadius: "50%", background: "rgba(255,92,0,0.15)", display: "flex", alignItems: "center", justifyContent: "center", fontWeight: 700, color: ORANGE, fontSize: 14 }}>H</div>
+                            <div style={{ width: 32, height: 32, borderRadius: "50%", background: "rgba(255,92,0,0.15)", display: "flex", alignItems: "center", justifyContent: "center", fontWeight: 700, color: ORANGE, fontSize: 14 }}>{userInitials}</div>
                             <div style={{ overflow: "hidden" }}>
-                                <p style={{ fontSize: 13, fontWeight: 700, color: TEXT, margin: 0, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>Harsh M.</p>
-                                <span style={{ fontSize: 10, background: "rgba(255,92,0,0.15)", color: ORANGE, padding: "1px 6px", borderRadius: 4, fontWeight: 700, display: "inline-block" }}>PRO</span>
+                                <p style={{ fontSize: 13, fontWeight: 700, color: TEXT, margin: 0, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>{userName}</p>
+                                <span style={{ fontSize: 10, background: "rgba(255,92,0,0.15)", color: ORANGE, padding: "1px 6px", borderRadius: 4, fontWeight: 700, display: "inline-block", textTransform: "uppercase" }}>{tier}</span>
                             </div>
                         </div>
-                        <p style={{ fontSize: 11, color: DIM, margin: 0, fontStyle: "italic" }}>Target: SWE L4 @ Google</p>
+                        <p style={{ fontSize: 11, color: DIM, margin: 0, fontStyle: "italic" }}>Target: {targetRole}</p>
                     </div>
                 )}
 
@@ -115,7 +120,9 @@ export function Sidebar() {
                     <ChevronRight style={{ width: 16, height: 16, transform: `rotate(${collapsed ? 0 : 180}deg)`, transition: "transform 0.3s" }} />
                 </button>
 
-                <button style={{ width: "100%", display: "flex", alignItems: "center", gap: 10, padding: "10px 12px", background: "transparent", border: "none", borderRadius: 10, cursor: "pointer", color: MUTED, fontWeight: 600, fontSize: 14, transition: "all 0.2s" }}
+                <button
+                    onClick={() => signOut({ callbackUrl: "/" })}
+                    style={{ width: "100%", display: "flex", alignItems: "center", gap: 10, padding: "10px 12px", background: "transparent", border: "none", borderRadius: 10, cursor: "pointer", color: MUTED, fontWeight: 600, fontSize: 14, transition: "all 0.2s" }}
                     onMouseEnter={(e) => { e.currentTarget.style.background = "rgba(239,68,68,0.08)"; e.currentTarget.style.color = "#EF4444"; }}
                     onMouseLeave={(e) => { e.currentTarget.style.background = "transparent"; e.currentTarget.style.color = MUTED; }}>
                     <LogOut style={{ width: 18, height: 18, flexShrink: 0 }} />
