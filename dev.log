@@ -1,0 +1,127 @@
+
+> interviewforge-ai-web@0.1.0 dev
+> next dev
+
+▲ Next.js 16.2.6 (Turbopack)
+- Local:         http://localhost:3000
+- Network:       http://192.168.1.8:3000
+- Environments: .env
+✓ Ready in 233ms
+Creating turbopack project {
+  dir: '/Users/harshmriduhash/Desktop/Interviewforge-AI/interviewforge-ai-web',
+  testMode: true
+}
+
+⚠ Your project has `@next/font` installed as a dependency, please use the built-in `next/font` instead. The `@next/font` package will be removed in Next.js 14. You can migrate by running `npx --yes @next/codemod@latest built-in-next-font .`. Read more: https://nextjs.org/docs/messages/built-in-next-font
+ GET / 200 in 419ms (next.js: 172ms, application-code: 247ms)
+[next-auth][error][JWT_SESSION_ERROR] 
+https://next-auth.js.org/errors#jwt_session_error decryption operation failed {
+  message: 'decryption operation failed',
+  stack: 'JWEDecryptionFailed: decryption operation failed\n' +
+    '    at gcmDecrypt (/Users/harshmriduhash/Desktop/Interviewforge-AI/interviewforge-ai-web/.next/dev/server/chunks/node_modules_jose_dist_node_cjs_0wmi9~u._.js:734:15)\n' +
+    '    at decrypt (/Users/harshmriduhash/Desktop/Interviewforge-AI/interviewforge-ai-web/.next/dev/server/chunks/node_modules_jose_dist_node_cjs_0wmi9~u._.js:757:20)\n' +
+    '    at flattenedDecrypt (/Users/harshmriduhash/Desktop/Interviewforge-AI/interviewforge-ai-web/.next/dev/server/chunks/node_modules_jose_dist_node_cjs_0wmi9~u._.js:2254:52)\n' +
+    '    at async compactDecrypt (/Users/harshmriduhash/Desktop/Interviewforge-AI/interviewforge-ai-web/.next/dev/server/chunks/node_modules_jose_dist_node_cjs_0wmi9~u._.js:2308:23)\n' +
+    '    at async jwtDecrypt (/Users/harshmriduhash/Desktop/Interviewforge-AI/interviewforge-ai-web/.next/dev/server/chunks/node_modules_jose_dist_node_cjs_0wmi9~u._.js:3770:23)\n' +
+    '    at async Object.decode (/Users/harshmriduhash/Desktop/Interviewforge-AI/interviewforge-ai-web/.next/dev/server/chunks/node_modules_next-auth_045ewy.._.js:725:25)\n' +
+    '    at async Object.session (/Users/harshmriduhash/Desktop/Interviewforge-AI/interviewforge-ai-web/.next/dev/server/chunks/node_modules_next-auth_045ewy.._.js:2038:34)\n' +
+    '    at async AuthHandler (/Users/harshmriduhash/Desktop/Interviewforge-AI/interviewforge-ai-web/.next/dev/server/chunks/node_modules_next-auth_045ewy.._.js:3184:37)\n' +
+    '    at async NextAuthRouteHandler (/Users/harshmriduhash/Desktop/Interviewforge-AI/interviewforge-ai-web/.next/dev/server/chunks/node_modules_next-auth_045ewy.._.js:3501:30)\n' +
+    '    at async NextAuth._args$ (/Users/harshmriduhash/Desktop/Interviewforge-AI/interviewforge-ai-web/.next/dev/server/chunks/node_modules_next-auth_045ewy.._.js:3536:24)\n' +
+    '    at async AppRouteRouteModule.do (/Users/harshmriduhash/Desktop/Interviewforge-AI/interviewforge-ai-web/node_modules/next/dist/compiled/next-server/app-route-turbo.runtime.dev.js:5:40115)\n' +
+    '    at async AppRouteRouteModule.handle (/Users/harshmriduhash/Desktop/Interviewforge-AI/interviewforge-ai-web/node_modules/next/dist/compiled/next-server/app-route-turbo.runtime.dev.js:5:47395)\n' +
+    '    at async responseGenerator (/Users/harshmriduhash/Desktop/Interviewforge-AI/interviewforge-ai-web/.next/dev/server/chunks/node_modules_next_134j~.d._.js:13678:38)\n' +
+    '    at async AppRouteRouteModule.handleResponse (/Users/harshmriduhash/Desktop/Interviewforge-AI/interviewforge-ai-web/node_modules/next/dist/compiled/next-server/app-route-turbo.runtime.dev.js:1:228552)\n' +
+    '    at async handleResponse (/Users/harshmriduhash/Desktop/Interviewforge-AI/interviewforge-ai-web/.next/dev/server/chunks/node_modules_next_134j~.d._.js:13741:32)\n' +
+    '    at async Module.handler (/Users/harshmriduhash/Desktop/Interviewforge-AI/interviewforge-ai-web/.next/dev/server/chunks/node_modules_next_134j~.d._.js:13795:13)\n' +
+    '    at async DevServer.renderToResponseWithComponentsImpl (/Users/harshmriduhash/Desktop/Interviewforge-AI/interviewforge-ai-web/node_modules/next/dist/server/base-server.js:1462:9)\n' +
+    '    at async DevServer.renderPageComponent (/Users/harshmriduhash/Desktop/Interviewforge-AI/interviewforge-ai-web/node_modules/next/dist/server/base-server.js:1514:24)\n' +
+    '    at async DevServer.renderToResponseImpl (/Users/harshmriduhash/Desktop/Interviewforge-AI/interviewforge-ai-web/node_modules/next/dist/server/base-server.js:1564:32)\n' +
+    '    at async DevServer.pipeImpl (/Users/harshmriduhash/Desktop/Interviewforge-AI/interviewforge-ai-web/node_modules/next/dist/server/base-server.js:1044:25)\n' +
+    '    at async NextNodeServer.handleCatchallRenderRequest (/Users/harshmriduhash/Desktop/Interviewforge-AI/interviewforge-ai-web/node_modules/next/dist/server/next-server.js:338:17)\n' +
+    '    at async DevServer.handleRequestImpl (/Users/harshmriduhash/Desktop/Interviewforge-AI/interviewforge-ai-web/node_modules/next/dist/server/base-server.js:935:17)\n' +
+    '    at async /Users/harshmriduhash/Desktop/Interviewforge-AI/interviewforge-ai-web/node_modules/next/dist/server/dev/next-dev-server.js:394:20\n' +
+    '    at async Span.traceAsyncFn (/Users/harshmriduhash/Desktop/Interviewforge-AI/interviewforge-ai-web/node_modules/next/dist/trace/trace.js:164:20)\n' +
+    '    at async DevServer.handleRequest (/Users/harshmriduhash/Desktop/Interviewforge-AI/interviewforge-ai-web/node_modules/next/dist/server/dev/next-dev-server.js:390:24)\n' +
+    '    at async invokeRender (/Users/harshmriduhash/Desktop/Interviewforge-AI/interviewforge-ai-web/node_modules/next/dist/server/lib/router-server.js:266:21)\n' +
+    '    at async handleRequest (/Users/harshmriduhash/Desktop/Interviewforge-AI/interviewforge-ai-web/node_modules/next/dist/server/lib/router-server.js:465:24)\n' +
+    '    at async requestHandlerImpl (/Users/harshmriduhash/Desktop/Interviewforge-AI/interviewforge-ai-web/node_modules/next/dist/server/lib/router-server.js:514:13)\n' +
+    '    at async Server.requestListener (/Users/harshmriduhash/Desktop/Interviewforge-AI/interviewforge-ai-web/node_modules/next/dist/server/lib/start-server.js:225:13)',
+  name: 'JWEDecryptionFailed'
+}
+ GET /api/auth/session 200 in 973ms (next.js: 934ms, application-code: 39ms)
+ GET /dashboard/settings 200 in 123ms (next.js: 30ms, application-code: 93ms)
+ GET /api/auth/session 200 in 15ms (next.js: 4ms, application-code: 11ms)
+ GET /api/auth/session 200 in 11ms (next.js: 1591µs, application-code: 10ms)
+ GET /api/auth/csrf 200 in 44ms (next.js: 10ms, application-code: 34ms)
+ POST /api/auth/signout 200 in 22ms (next.js: 7ms, application-code: 15ms)
+ GET /api/auth/session 200 in 14ms (next.js: 2ms, application-code: 12ms)
+ GET / 200 in 131ms (next.js: 5ms, application-code: 126ms)
+ GET /api/auth/session 200 in 41ms (next.js: 4ms, application-code: 37ms)
+ GET /api/auth/session 200 in 12ms (next.js: 1980µs, application-code: 10ms)
+ GET /auth/login 200 in 73ms (next.js: 37ms, application-code: 37ms)
+ GET /api/auth/providers 200 in 19ms (next.js: 6ms, application-code: 13ms)
+ GET /auth/signup 200 in 144ms (next.js: 27ms, application-code: 116ms)
+ GET /api/auth/session 200 in 17ms (next.js: 3ms, application-code: 15ms)
+ GET /api/auth/session 200 in 11ms (next.js: 1101µs, application-code: 10ms)
+ GET /auth/login 200 in 71ms (next.js: 3ms, application-code: 68ms)
+ GET /api/auth/session 200 in 25ms (next.js: 4ms, application-code: 22ms)
+ GET /api/auth/session 200 in 18ms (next.js: 4ms, application-code: 14ms)
+ GET /api/auth/providers 200 in 54ms (next.js: 30ms, application-code: 24ms)
+ GET /api/auth/csrf 200 in 13ms (next.js: 4ms, application-code: 9ms)
+(node:2713) Warning: SECURITY WARNING: The SSL modes 'prefer', 'require', and 'verify-ca' are treated as aliases for 'verify-full'.
+In the next major version (pg-connection-string v3.0.0 and pg v9.0.0), these modes will adopt standard libpq semantics, which have weaker security guarantees.
+
+To prepare for this change:
+- If you want the current behavior, explicitly use 'sslmode=verify-full'
+- If you want libpq compatibility now, use 'uselibpqcompat=true&sslmode=require'
+
+See https://www.postgresql.org/docs/current/libpq-ssl.html for libpq SSL mode definitions.
+(Use `node --trace-warnings ...` to show where the warning was created)
+prisma:query SELECT "public"."users"."id", "public"."users"."email", "public"."users"."emailVerified", "public"."users"."name", "public"."users"."avatarUrl", "public"."users"."passwordHash", "public"."users"."authProvider", "public"."users"."tier", "public"."users"."stripeCustomerId", "public"."users"."onboardingCompleted", "public"."users"."targetRole", "public"."users"."experienceLevel", "public"."users"."interviewTimeline", "public"."users"."createdAt", "public"."users"."updatedAt", "public"."users"."lastActiveAt", "public"."users"."deletedAt" FROM "public"."users" WHERE ("public"."users"."email" = $1 AND 1=1) LIMIT $2 OFFSET $3
+ POST /api/auth/callback/credentials 401 in 4.5s (next.js: 4ms, application-code: 4.5s)
+ GET /auth/signup 200 in 47ms (next.js: 7ms, application-code: 40ms)
+prisma:query SELECT "public"."users"."id", "public"."users"."email", "public"."users"."emailVerified", "public"."users"."name", "public"."users"."avatarUrl", "public"."users"."passwordHash", "public"."users"."authProvider", "public"."users"."tier", "public"."users"."stripeCustomerId", "public"."users"."onboardingCompleted", "public"."users"."targetRole", "public"."users"."experienceLevel", "public"."users"."interviewTimeline", "public"."users"."createdAt", "public"."users"."updatedAt", "public"."users"."lastActiveAt", "public"."users"."deletedAt" FROM "public"."users" WHERE ("public"."users"."email" = $1 AND 1=1) LIMIT $2 OFFSET $3
+prisma:query INSERT INTO "public"."users" ("id","email","emailVerified","name","passwordHash","authProvider","tier","onboardingCompleted","createdAt","updatedAt") VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10) RETURNING "public"."users"."id"
+prisma:query INSERT INTO "public"."user_progress" ("id","userId","readinessScore","totalSessions","totalDurationMinutes","currentStreak","longestStreak","weakTopics","strongTopics","questionsSeen","updatedAt") VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11) RETURNING "public"."user_progress"."id"
+prisma:query SELECT "public"."users"."id", "public"."users"."name", "public"."users"."email", "public"."users"."tier" FROM "public"."users" WHERE "public"."users"."id" = $1 LIMIT $2 OFFSET $3
+prisma:query COMMIT
+ POST /api/auth/register 201 in 5.6s (next.js: 124ms, application-code: 5.5s)
+ GET /api/auth/providers 200 in 14ms (next.js: 5ms, application-code: 9ms)
+ GET /api/auth/csrf 200 in 13ms (next.js: 3ms, application-code: 11ms)
+prisma:query SELECT "public"."users"."id", "public"."users"."email", "public"."users"."emailVerified", "public"."users"."name", "public"."users"."avatarUrl", "public"."users"."passwordHash", "public"."users"."authProvider", "public"."users"."tier", "public"."users"."stripeCustomerId", "public"."users"."onboardingCompleted", "public"."users"."targetRole", "public"."users"."experienceLevel", "public"."users"."interviewTimeline", "public"."users"."createdAt", "public"."users"."updatedAt", "public"."users"."lastActiveAt", "public"."users"."deletedAt" FROM "public"."users" WHERE ("public"."users"."email" = $1 AND 1=1) LIMIT $2 OFFSET $3
+ POST /api/auth/callback/credentials 200 in 751ms (next.js: 1552µs, application-code: 750ms)
+ GET /api/auth/session 200 in 16ms (next.js: 5ms, application-code: 10ms)
+ GET /onboarding 200 in 67ms (next.js: 39ms, application-code: 28ms)
+prisma:query UPDATE "public"."users" SET "targetRole" = $1, "experienceLevel" = $2, "interviewTimeline" = $3, "onboardingCompleted" = $4, "updatedAt" = $5 WHERE ("public"."users"."id" = $6 AND 1=1) RETURNING "public"."users"."id", "public"."users"."email", "public"."users"."emailVerified", "public"."users"."name", "public"."users"."avatarUrl", "public"."users"."passwordHash", "public"."users"."authProvider", "public"."users"."tier", "public"."users"."stripeCustomerId", "public"."users"."onboardingCompleted", "public"."users"."targetRole", "public"."users"."experienceLevel", "public"."users"."interviewTimeline", "public"."users"."createdAt", "public"."users"."updatedAt", "public"."users"."lastActiveAt", "public"."users"."deletedAt"
+prisma:query INSERT INTO "public"."user_progress" ("id","userId","readinessScore","totalSessions","totalDurationMinutes","currentStreak","longestStreak","weakTopics","strongTopics","questionsSeen","updatedAt") VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11) ON CONFLICT ("userId") DO UPDATE SET "readinessByCompany" = $12, "updatedAt" = $13 WHERE ("public"."user_progress"."userId" = $14 AND 1=1) RETURNING "public"."user_progress"."id", "public"."user_progress"."userId", "public"."user_progress"."readinessScore", "public"."user_progress"."totalSessions", "public"."user_progress"."totalDurationMinutes", "public"."user_progress"."currentStreak", "public"."user_progress"."longestStreak", "public"."user_progress"."lastSessionAt", "public"."user_progress"."weakTopics", "public"."user_progress"."strongTopics", "public"."user_progress"."questionsSeen", "public"."user_progress"."readinessByCompany", "public"."user_progress"."dimensionHistory", "public"."user_progress"."updatedAt"
+ POST /api/users/me/onboarding 200 in 4.2s (next.js: 244ms, application-code: 3.9s)
+ GET /api/auth/csrf 200 in 40ms (next.js: 13ms, application-code: 27ms)
+ POST /api/auth/session 200 in 37ms (next.js: 5ms, application-code: 32ms)
+ GET /api/auth/session 200 in 118ms (next.js: 6ms, application-code: 112ms)
+ GET /dashboard 200 in 264ms (next.js: 180ms, application-code: 84ms)
+ GET /dashboard/settings 200 in 192ms (next.js: 84ms, application-code: 108ms)
+ GET /dashboard/settings 200 in 229ms (next.js: 38ms, application-code: 192ms)
+ GET /api/auth/session 200 in 32ms (next.js: 8ms, application-code: 24ms)
+ GET /api/auth/session 200 in 16ms (next.js: 1805µs, application-code: 14ms)
+ GET /api/users 404 in 129ms (next.js: 99ms, application-code: 30ms)
+ GET /api/auth/session 200 in 24ms (next.js: 12ms, application-code: 12ms)
+ GET /api/auth/session 200 in 16ms (next.js: 3ms, application-code: 13ms)
+ GET /auth/login 200 in 268ms (next.js: 28ms, application-code: 240ms)
+ GET /api/auth/session 200 in 41ms (next.js: 10ms, application-code: 30ms)
+ GET /api/auth/session 200 in 33ms (next.js: 4ms, application-code: 29ms)
+ GET /api/auth/providers 200 in 70ms (next.js: 39ms, application-code: 31ms)
+ GET /api/auth/csrf 200 in 36ms (next.js: 8ms, application-code: 28ms)
+prisma:query SELECT "public"."users"."id", "public"."users"."email", "public"."users"."emailVerified", "public"."users"."name", "public"."users"."avatarUrl", "public"."users"."passwordHash", "public"."users"."authProvider", "public"."users"."tier", "public"."users"."stripeCustomerId", "public"."users"."onboardingCompleted", "public"."users"."targetRole", "public"."users"."experienceLevel", "public"."users"."interviewTimeline", "public"."users"."createdAt", "public"."users"."updatedAt", "public"."users"."lastActiveAt", "public"."users"."deletedAt" FROM "public"."users" WHERE ("public"."users"."email" = $1 AND 1=1) LIMIT $2 OFFSET $3
+ POST /api/auth/callback/credentials 401 in 3.6s (next.js: 11ms, application-code: 3.6s)
+ GET /api/auth/providers 200 in 136ms (next.js: 62ms, application-code: 74ms)
+ GET /api/auth/csrf 200 in 38ms (next.js: 3ms, application-code: 35ms)
+prisma:query SELECT "public"."users"."id", "public"."users"."email", "public"."users"."emailVerified", "public"."users"."name", "public"."users"."avatarUrl", "public"."users"."passwordHash", "public"."users"."authProvider", "public"."users"."tier", "public"."users"."stripeCustomerId", "public"."users"."onboardingCompleted", "public"."users"."targetRole", "public"."users"."experienceLevel", "public"."users"."interviewTimeline", "public"."users"."createdAt", "public"."users"."updatedAt", "public"."users"."lastActiveAt", "public"."users"."deletedAt" FROM "public"."users" WHERE ("public"."users"."email" = $1 AND 1=1) LIMIT $2 OFFSET $3
+ POST /api/auth/callback/credentials 401 in 3.6s (next.js: 7ms, application-code: 3.6s)
+ GET /api/auth/providers 200 in 20ms (next.js: 6ms, application-code: 14ms)
+ GET /api/auth/csrf 200 in 15ms (next.js: 4ms, application-code: 10ms)
+prisma:query SELECT "public"."users"."id", "public"."users"."email", "public"."users"."emailVerified", "public"."users"."name", "public"."users"."avatarUrl", "public"."users"."passwordHash", "public"."users"."authProvider", "public"."users"."tier", "public"."users"."stripeCustomerId", "public"."users"."onboardingCompleted", "public"."users"."targetRole", "public"."users"."experienceLevel", "public"."users"."interviewTimeline", "public"."users"."createdAt", "public"."users"."updatedAt", "public"."users"."lastActiveAt", "public"."users"."deletedAt" FROM "public"."users" WHERE ("public"."users"."email" = $1 AND 1=1) LIMIT $2 OFFSET $3
+ POST /api/auth/callback/credentials 401 in 3.6s (next.js: 1151µs, application-code: 3.6s)
+ GET /auth/forgot-password 404 in 27ms (next.js: 6ms, application-code: 21ms)
+ GET /auth/forgot-password 404 in 30ms (next.js: 3ms, application-code: 27ms)
+ GET /api/auth/session 200 in 45ms (next.js: 25ms, application-code: 20ms)
