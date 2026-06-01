@@ -49,7 +49,7 @@ export default function SessionInterface() {
         const introText = `Welcome to your ${data.company?.name || "General"} ${data.roundType?.replace("_", " ")} interview. Let's begin. How would you handle high-throughput consistency tradeoffs in a large-scale database?`;
         setTranscript(introText);
         speakText(introText);
-        
+
         // Start duration timer
         timerRef.current = setInterval(() => {
           setElapsedSeconds(s => s + 1);
@@ -122,12 +122,12 @@ export default function SessionInterface() {
     window.speechSynthesis.cancel();
     setAiState("speaking");
     const utterance = new SpeechSynthesisUtterance(text);
-    
+
     // Choose premium sounding voice if available
     const voices = window.speechSynthesis.getVoices();
     const premiumVoice = voices.find(v => v.name.includes("Google") || v.name.includes("Natural"));
     if (premiumVoice) utterance.voice = premiumVoice;
-    
+
     utterance.onend = () => {
       startListening();
     };
@@ -175,7 +175,7 @@ export default function SessionInterface() {
     rec.start();
   };
 
-  // 5. Evaluate response (Simulated or WS pipeline)
+  // 5. Evaluate response — calls real Gemini AI
   const evaluateAnswer = async (spokenText: string) => {
     if (!spokenText.trim()) return;
 
@@ -188,38 +188,63 @@ export default function SessionInterface() {
       return;
     }
 
-    // High fidelity fallback evaluation logic
     setAiState("evaluating");
     setIsThinking(true);
 
-    setTimeout(() => {
+    try {
+      const res = await fetch("/api/sessions/evaluate", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          question: transcript,
+          answer: spokenText,
+          roundType: sessionData?.roundType,
+          difficulty: sessionData?.difficulty,
+          exchangeCount: exchangesCount,
+        }),
+      });
+
+      const data = await res.json();
+
+      if (!res.ok || !data.evaluation) {
+        throw new Error(data.error || "Evaluation failed");
+      }
+
+      const { evaluation } = data;
+      const { scores: s, overall_score, ai_response, next_action } = evaluation;
+
+      // Update live score sidebar
+      const newScores = {
+        technical: Math.round(s.technical_accuracy ?? scores.technical),
+        communication: Math.round(s.communication_clarity ?? scores.communication),
+        structure: Math.round(s.answer_structure ?? scores.structure),
+      };
+      setScores(newScores);
+
       setIsThinking(false);
       setAiState("speaking");
 
-      // Progressive dynamic AI follow-up prompts based on round types
-      let nextPrompt = "";
-      if (sessionData?.roundType === "system_design") {
-        nextPrompt = "That is an elegant architectural optimization. Eventual consistency indeed avoids locks. How would you handle cache eviction policies if your DB is throttled?";
-      } else if (sessionData?.roundType === "behavioral") {
-        nextPrompt = "That STAR outline demonstrates outstanding leadership. Tell me how you would measure success or handle post-incident retrospective adjustments.";
-      } else {
-        nextPrompt = "Excellent computational analysis. The time complexity is optimal. How would you optimize the memory footprint to run in space complexity O(1)?";
-      }
-
+      // AI responds out loud
+      const nextPrompt = ai_response || "Let me ask you another question.";
       setTranscript(nextPrompt);
       speakText(nextPrompt);
 
-      // Generate realistic scores
-      const nextScores = {
-        technical: Math.min(100, Math.max(50, scores.technical === 0 ? 74 : scores.technical + (Math.random() > 0.4 ? 4 : -2))),
-        communication: Math.min(100, Math.max(50, scores.communication === 0 ? 82 : scores.communication + (Math.random() > 0.4 ? 3 : -1))),
-        structure: Math.min(100, Math.max(50, scores.structure === 0 ? 78 : scores.structure + (Math.random() > 0.4 ? 5 : -3))),
-      };
-      setScores(nextScores);
+      // Save the exchange to DB
+      saveExchangeToDb(nextPrompt, spokenText, newScores, evaluation.feedback_summary || "");
 
-      // Save exchange to DB
-      saveExchangeToDb(nextPrompt, spokenText, nextScores, "Excellent answer outlining trade-offs clearly.");
-    }, 2000);
+      // If AI says to end session, end after response
+      if (next_action === "end_session") {
+        setTimeout(() => handleEndSession(), 8000);
+      }
+
+    } catch (err) {
+      console.error("Gemini evaluation error:", err);
+      setIsThinking(false);
+      setAiState("speaking");
+      const fallback = "That was an interesting perspective. Let me push back a bit — how would that approach scale to millions of concurrent users?";
+      setTranscript(fallback);
+      speakText(fallback);
+    }
   };
 
   // 6. Save Exchange to Database
@@ -391,7 +416,7 @@ export default function SessionInterface() {
                     <Clock className="w-3.5 h-3.5 text-primary" />
                     Live Evaluation Metrics
                   </div>
-                  
+
                   <div className="space-y-4">
                     {[
                       { label: 'Technical Precision', val: scores.technical },
