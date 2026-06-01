@@ -72,7 +72,7 @@ export async function PATCH(
   // If completed, update longitudinal user progress aggregation
   if (status === "completed") {
     const userId = (session.user as any).id as string;
-    
+
     const allCompleted = await prisma.session.findMany({
       where: { userId, status: "completed" },
       select: { overallScore: true, durationSeconds: true },
@@ -80,9 +80,9 @@ export async function PATCH(
 
     const totalSessions = allCompleted.length;
     const totalDurationMinutes = Math.round(
-      allCompleted.reduce((acc, s) => acc + (s.durationSeconds || 0), 0) / 60
+      allCompleted.reduce((acc: number, s) => acc + (s.durationSeconds || 0), 0) / 60
     );
-    const averageOverallScore = allCompleted.reduce((acc, s) => acc + Number(s.overallScore || 0), 0) / totalSessions;
+    const averageOverallScore = allCompleted.reduce((acc: number, s) => acc + Number(s.overallScore || 0), 0) / totalSessions;
 
     await prisma.userProgress.upsert({
       where: { userId },
