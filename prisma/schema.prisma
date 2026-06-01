@@ -32,8 +32,34 @@ model User {
   userProgress        UserProgress?
   refreshTokens       RefreshToken[]
   subscription        Subscription?
+  cancellationReasons CancellationReason[]
+  deletionRequests    AccountDeletionRequest[]
 
   @@map("users")
+}
+
+model CancellationReason {
+  id        String   @id @default(uuid())
+  userId    String
+  reason    String
+  feedback  String?
+  createdAt DateTime @default(now())
+
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("cancellation_reasons")
+}
+
+model AccountDeletionRequest {
+  id          String    @id @default(uuid())
+  userId      String
+  scheduledAt DateTime
+  cancelledAt DateTime?
+  createdAt   DateTime  @default(now())
+
+  user        User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("account_deletion_requests")
 }
 
 model Session {
