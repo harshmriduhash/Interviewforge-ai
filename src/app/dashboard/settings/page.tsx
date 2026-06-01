@@ -2,26 +2,48 @@
 
 import { useEffect, useState } from "react";
 import { Sidebar } from "@/components/dashboard/Sidebar";
-import { motion } from "framer-motion";
+import { motion, AnimatePresence } from "framer-motion";
 import { Settings, CreditCard, Shield, AlertTriangle, CheckCircle2, User, Building, Trash2 } from "lucide-react";
 import { useRouter } from "next/navigation";
+import { useSession } from "next-auth/react";
+import { CancelSubscriptionModal } from "@/components/dashboard/CancelSubscriptionModal";
+import { DeleteAccountModal } from "@/components/dashboard/DeleteAccountModal";
 
 export default function SettingsPage() {
   const router = useRouter();
+  const { data: session, update } = useSession();
   const [loading, setLoading] = useState(false);
+  const [isCancelModalOpen, setIsCancelModalOpen] = useState(false);
+  const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
+
   const [profile, setProfile] = useState({
-    name: "Harsh M.",
-    email: "harsh@example.com",
-    role: "Software Engineer",
-    experience: "mid_level",
-    targetCompany: "Google",
+    name: session?.user?.name || "Candidate",
+    email: session?.user?.email || "",
+    role: (session?.user as any)?.targetRole || "Software Engineer",
+    experience: (session?.user as any)?.experienceLevel || "mid_level",
+    targetCompany: (session?.user as any)?.targetCompany || "",
   });
-  const [tier, setTier] = useState("pro");
+
+  const [tier, setTier] = useState(session?.user ? (session.user as any).tier : "free");
   const [success, setSuccess] = useState("");
+
+  useEffect(() => {
+    if (session?.user) {
+      setProfile({
+        name: session.user.name || "",
+        email: session.user.email || "",
+        role: (session.user as any).targetRole || "Software Engineer",
+        experience: (session.user as any).experienceLevel || "mid_level",
+        targetCompany: (session.user as any).targetCompany || "",
+      });
+      setTier((session.user as any).tier || "free");
+    }
+  }, [session]);
 
   const handleSave = (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
+    // Simulation of profile update
     setTimeout(() => {
       setSuccess("Profile settings successfully synchronized.");
       setLoading(false);
@@ -29,23 +51,12 @@ export default function SettingsPage() {
     }, 800);
   };
 
-  const handleSimulateStripe = () => {
-    setLoading(true);
-    setTimeout(() => {
-      const nextTier = tier === "pro" ? "free" : "pro";
-      setTier(nextTier);
-      setSuccess(`Subscription tier toggled to ${nextTier.toUpperCase()}.`);
-      setLoading(false);
-      setTimeout(() => setSuccess(""), 4000);
-    }, 1200);
-  };
-
   return (
     <div style={{ minHeight: "100vh", background: "#0A0A0A", display: "flex" }}>
       <Sidebar />
       <main style={{ flex: 1, paddingLeft: 240, minHeight: "100vh" }}>
         <div className="p-8 lg:p-12 max-w-4xl mx-auto space-y-10">
-          
+
           {/* Header */}
           <div className="space-y-2">
             <h1 className="text-3xl font-black text-white tracking-tight">Portal Settings</h1>
@@ -63,7 +74,7 @@ export default function SettingsPage() {
 
           {/* Grid Layout */}
           <div className="space-y-8">
-            
+
             {/* Component 1: Personal profile */}
             <div className="glass p-8 rounded-3xl border border-border/60 space-y-6">
               <div className="flex items-center gap-2.5 pb-4 border-b border-border/40">
@@ -81,7 +92,7 @@ export default function SettingsPage() {
                     className="w-full px-4 py-3 bg-[#0D0D0D] border border-border rounded-xl text-white outline-none focus:border-primary transition-all text-sm font-bold"
                   />
                 </div>
-                
+
                 <div className="space-y-2">
                   <label className="text-xs font-bold text-text-muted uppercase tracking-wider">Target Role / Track</label>
                   <input
@@ -149,13 +160,20 @@ export default function SettingsPage() {
                   </p>
                 </div>
 
-                <button
-                  onClick={handleSimulateStripe}
-                  disabled={loading}
-                  className="px-6 py-3 border border-border bg-surface hover:bg-surface-2 text-white font-bold rounded-xl text-xs transition-all whitespace-nowrap"
-                >
-                  {tier === "pro" ? "Simulate Cancel Pro" : "Simulate Stripe Pro Checkout →"}
-                </button>
+                {tier === "pro" ? (
+                  <button
+                    onClick={() => setIsCancelModalOpen(true)}
+                    className="px-6 py-3 border border-border bg-surface hover:bg-surface-2 text-white font-bold rounded-xl text-xs transition-all whitespace-nowrap"
+                  >
+                    Cancel Subscription
+                  </button>
+                ) : (
+                  <button
+                    className="px-6 py-3 bg-primary hover:bg-primary-hover text-white font-bold rounded-xl text-xs transition-all whitespace-nowrap"
+                  >
+                    Upgrade to Pro →
+                  </button>
+                )}
               </div>
             </div>
 
@@ -168,16 +186,17 @@ export default function SettingsPage() {
 
               <div className="flex flex-col md:flex-row md:items-center justify-between gap-6">
                 <div>
-                  <h4 className="text-white font-bold text-sm">Purge Practice Repository</h4>
+                  <h4 className="text-white font-bold text-sm">Purge Account Identity</h4>
                   <p className="text-text-muted text-xs mt-1 leading-relaxed max-w-md">
-                    Permanently delete all past spoken audio transcript records, scored metrics, and streaks. This process is absolutely irreversible.
+                    Permanently delete your profile, spoken audio records, and longitudinal readiness history. This process is absolutely irreversible and follows a 12-hour cooling period.
                   </p>
                 </div>
 
                 <button
+                  onClick={() => setIsDeleteModalOpen(true)}
                   className="px-5 py-3 bg-error/10 hover:bg-error/20 text-error border border-error/20 font-bold rounded-xl text-xs transition-all flex items-center gap-1.5"
                 >
-                  <Trash2 className="w-4 h-4" /> Purge Repository
+                  <Trash2 className="w-4 h-4" /> Delete My Account
                 </button>
               </div>
             </div>
@@ -186,6 +205,25 @@ export default function SettingsPage() {
 
         </div>
       </main>
+
+      <AnimatePresence>
+        {isCancelModalOpen && (
+          <CancelSubscriptionModal
+            isOpen={isCancelModalOpen}
+            onClose={() => setIsCancelModalOpen(false)}
+            onConfirm={() => {
+              setTier("free");
+              update({ tier: "free" });
+            }}
+          />
+        )}
+        {isDeleteModalOpen && (
+          <DeleteAccountModal
+            isOpen={isDeleteModalOpen}
+            onClose={() => setIsDeleteModalOpen(false)}
+          />
+        )}
+      </AnimatePresence>
     </div>
   );
 }
