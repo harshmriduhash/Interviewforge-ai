@@ -41,7 +41,7 @@ const inputStyle = {
     transition: "border-color 0.2s",
 };
 
-export default function ResetPasswordPage() {
+function ResetPasswordContent() {
     const searchParams = useSearchParams();
     const router = useRouter();
     const token = searchParams.get("token");
