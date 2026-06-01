@@ -15,31 +15,46 @@ export const authOptions: NextAuthOptions = {
         password: { label: "Password", type: "password" }
       },
       async authorize(credentials) {
-        if (!credentials?.email || !credentials?.password) {
-          throw new Error("Invalid credentials");
+        try {
+          if (!credentials?.email || !credentials?.password) {
+            console.error("Auth: Missing credentials");
+            throw new Error("Invalid credentials");
+          }
+
+          console.log(`Auth: Attempting login for ${credentials.email}`);
+          const user = await prisma.user.findUnique({
+            where: { email: credentials.email },
+          });
+
+          if (!user) {
+            console.warn(`Auth: No user found for ${credentials.email}`);
+            throw new Error("No user found with this email");
+          }
+
+          if (!user.passwordHash) {
+            console.warn(`Auth: User ${credentials.email} has no password hash (OAuth account?)`);
+            throw new Error("No password hash found for this user");
+          }
+
+          const isValid = await bcrypt.compare(credentials.password, user.passwordHash);
+
+          if (!isValid) {
+            console.warn(`Auth: Incorrect password for ${credentials.email}`);
+            throw new Error("Incorrect password");
+          }
+
+          console.log(`Auth: Login successful for ${credentials.email}`);
+          return {
+            id: user.id,
+            name: user.name,
+            email: user.email,
+            tier: user.tier,
+            onboardingCompleted: user.onboardingCompleted,
+          };
+        } catch (error) {
+          console.error("Auth Error:", error);
+          throw error;
         }
-
-        const user = await prisma.user.findUnique({
-          where: { email: credentials.email },
-        });
-
-        if (!user || !user.passwordHash) {
-          throw new Error("No user found with this email");
-        }
-
-        const isValid = await bcrypt.compare(credentials.password, user.passwordHash);
-
-        if (!isValid) {
-          throw new Error("Incorrect password");
-        }
-
-        return {
-          id: user.id,
-          name: user.name,
-          email: user.email,
-          tier: user.tier,
-          onboardingCompleted: user.onboardingCompleted,
-        };
       }
     })
   ],
@@ -50,7 +65,7 @@ export const authOptions: NextAuthOptions = {
         token.tier = (user as any).tier;
         token.onboardingCompleted = (user as any).onboardingCompleted;
       }
-      
+
       // Allow dynamic token updates when onboarding is completed
       if (trigger === "update" && session) {
         token.onboardingCompleted = session.onboardingCompleted;
