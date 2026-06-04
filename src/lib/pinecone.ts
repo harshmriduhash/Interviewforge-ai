@@ -55,7 +55,7 @@ export async function upsertQuestions(
 
     // Upsert in batches of 100
     for (let i = 0; i < vectors.length; i += 100) {
-        await index.upsert(vectors.slice(i, i + 100));
+        await index.upsert({ records: vectors.slice(i, i + 100) });
     }
 }
 
