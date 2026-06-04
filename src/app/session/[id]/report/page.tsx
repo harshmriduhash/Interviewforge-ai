@@ -5,13 +5,14 @@ import { motion } from "framer-motion";
 import { Radar, RadarChart, PolarGrid, PolarAngleAxis, ResponsiveContainer, BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Cell } from "recharts";
 import { Download, Share2, ArrowLeft, CheckCircle2, AlertCircle, TrendingUp, Sparkles } from "lucide-react";
 import Link from "next/link";
-import { useParams } from "next/navigation";
+import { useParams, useRouter } from "next/navigation";
+import { toast } from "sonner";
+import { trackEvent } from "@/lib/posthog";
 
 export default function ReportInterface() {
   const params = useParams();
   const sessionId = params.id as string;
-  const [session, setSession] = useState<any>(null);
-  const [loading, setLoading] = useState(true);
+
 
   useEffect(() => {
     fetch(`/api/sessions/${sessionId}`)
@@ -19,9 +20,53 @@ export default function ReportInterface() {
       .then(d => {
         setSession(d);
         setLoading(false);
+        trackEvent("report_viewed", { sessionId });
       })
       .catch(() => setLoading(false));
   }, [sessionId]);
+
+  const handleDownloadPdf = async () => {
+    setDownloading(true);
+    try {
+      const res = await fetch(`/api/sessions/${sessionId}/pdf`);
+      if (!res.ok) throw new Error("Failed to generate PDF");
+      const blob = await res.blob();
+      const url = window.URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = `interviewforge-report-${sessionId.slice(0, 8)}.pdf`;
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+      trackEvent("pdf_downloaded", { sessionId });
+      toast.success("Report downloaded successfully");
+    } catch (error) {
+      console.error(error);
+      toast.error("Failed to download PDF report");
+    } finally {
+      setDownloading(false);
+    }
+  };
+
+  const handleShare = async () => {
+    setSharing(true);
+    try {
+      const res = await fetch(`/api/sessions/${sessionId}/share`, { method: "POST" });
+      const data = await res.json();
+      if (data.shareUrl) {
+        await navigator.clipboard.writeText(data.shareUrl);
+        trackEvent("share_created", { sessionId });
+        toast.success("Share link copied to clipboard!", {
+          description: "Anyone with this link can view this report.",
+        });
+      }
+    } catch (error) {
+      console.error(error);
+      toast.error("Failed to generate share link");
+    } finally {
+      setSharing(false);
+    }
+  };
 
   if (loading) {
     return (
@@ -78,11 +123,19 @@ export default function ReportInterface() {
             <span>Dashboard</span>
           </Link>
           <div className="flex items-center gap-4">
-            <button className="px-4 py-2 bg-surface border border-border rounded-xl text-white text-xs font-bold flex items-center gap-2 hover:border-primary transition-all">
-              <Share2 className="w-4 h-4" /> Share
+            <button
+              disabled={sharing}
+              onClick={handleShare}
+              className="px-4 py-2 bg-surface border border-border rounded-xl text-white text-xs font-bold flex items-center gap-2 hover:border-primary transition-all disabled:opacity-50"
+            >
+              <Share2 className="w-4 h-4" /> {sharing ? "Generating..." : "Share"}
             </button>
-            <button className="px-4 py-2 bg-primary text-white rounded-xl text-xs font-bold flex items-center gap-2 shadow-lg shadow-primary/25 hover:bg-primary-hover transition-all">
-              <Download className="w-4 h-4" /> Download PDF
+            <button
+              disabled={downloading}
+              onClick={handleDownloadPdf}
+              className="px-4 py-2 bg-primary text-white rounded-xl text-xs font-bold flex items-center gap-2 shadow-lg shadow-primary/25 hover:bg-primary-hover transition-all disabled:opacity-50"
+            >
+              <Download className="w-4 h-4" /> {downloading ? "Exporting..." : "Download PDF"}
             </button>
           </div>
         </div>
@@ -185,7 +238,7 @@ export default function ReportInterface() {
                     <span>Exchange #{ex.exchangeOrder || idx + 1}</span>
                     <span className="text-primary font-black uppercase">Round Audited</span>
                   </div>
-                  
+
                   <div className="space-y-2">
                     <span className="block text-[10px] text-text-muted font-bold uppercase tracking-wider">AI Question</span>
                     <p className="text-white text-sm font-semibold leading-relaxed">{ex.aiQuestion}</p>
