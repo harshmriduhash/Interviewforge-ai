@@ -11,9 +11,10 @@ import { trackEvent } from "@/lib/posthog";
 
 export default function ReportInterface() {
   const params = useParams();
-  const sessionId = params.id as string;
-
-
+  const sessionId = params.id as string; const [session, setSession] = useState<any>(null);
+  const [loading, setLoading] = useState(true);
+  const [sharing, setSharing] = useState(false);
+  const [downloading, setDownloading] = useState(false);
   useEffect(() => {
     fetch(`/api/sessions/${sessionId}`)
       .then(r => r.json())
