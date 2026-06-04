@@ -127,3 +127,4 @@ prisma:query SELECT "public"."users"."id", "public"."users"."email", "public"."u
  GET /api/auth/session 200 in 45ms (next.js: 25ms, application-code: 20ms)
  GET /auth/forgot-password 404 in 80ms (next.js: 27ms, application-code: 53ms)
  GET /api/auth/session 200 in 60ms (next.js: 33ms, application-code: 27ms)
+[?25h
