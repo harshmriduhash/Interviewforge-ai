@@ -40,10 +40,7 @@ export async function POST(req: NextRequest) {
                     create: {
                         userId,
                         stripeSubscriptionId: subscriptionId,
-                        stripePriceId: subscription.items.data[0]?.price?.id || null,
-                        status: "active",
-                        currentPeriodStart: new Date(subscription.current_period_start * 1000),
-                        currentPeriodEnd: new Date(subscription.current_period_end * 1000),
+
                     },
                     update: {
                         stripeSubscriptionId: subscriptionId,
