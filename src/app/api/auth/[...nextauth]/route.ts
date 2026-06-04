@@ -2,6 +2,7 @@ import NextAuth, { NextAuthOptions } from "next-auth";
 import CredentialsProvider from "next-auth/providers/credentials";
 import { prisma } from "@/lib/prisma";
 import bcrypt from "bcryptjs";
+import { checkAccountLockout, recordFailedLogin, clearFailedLogins } from "@/lib/rateLimit";
 
 export const authOptions: NextAuthOptions = {
   session: {
@@ -19,6 +20,12 @@ export const authOptions: NextAuthOptions = {
           if (!credentials?.email || !credentials?.password) {
             console.error("Auth: Missing credentials");
             throw new Error("Invalid credentials");
+          }
+
+          // Check account lockout (§4.5)
+          const isLocked = await checkAccountLockout(credentials.email);
+          if (isLocked) {
+            throw new Error("Account locked due to too many failed attempts. Please try again in 15 minutes.");
           }
 
           console.log(`Auth: Attempting login for ${credentials.email}`);
@@ -40,8 +47,12 @@ export const authOptions: NextAuthOptions = {
 
           if (!isValid) {
             console.warn(`Auth: Incorrect password for ${credentials.email}`);
+            await recordFailedLogin(credentials.email);
             throw new Error("Incorrect password");
           }
+
+          // Successful login - clear failed attempts
+          await clearFailedLogins(credentials.email);
 
           console.log(`Auth: Login successful for ${credentials.email}`);
           return {

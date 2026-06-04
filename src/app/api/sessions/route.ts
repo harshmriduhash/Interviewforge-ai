@@ -44,6 +44,20 @@ export async function POST(req: NextRequest) {
     companyId = company?.id || null;
   }
 
+  // 1. Session Limit Enforcement (§6.1)
+  const user = await prisma.user.findUnique({ where: { id: userId } });
+  if (user?.tier === "free") {
+    const sessionCount = await prisma.session.count({
+      where: { userId, status: { in: ["completed", "active"] } }, // count only meaningful sessions
+    });
+    if (sessionCount >= 3) {
+      return NextResponse.json(
+        { error: "Free tier limit reached. Please upgrade to Pro for unlimited sessions." },
+        { status: 403 }
+      );
+    }
+  }
+
   const newSession = await prisma.session.create({
     data: {
       userId,

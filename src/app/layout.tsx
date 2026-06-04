@@ -3,6 +3,7 @@ import { Inter, JetBrains_Mono } from "next/font/google";
 import "./globals.css";
 import { cn } from "@/lib/utils";
 import { SessionProvider } from "@/components/providers/SessionProvider";
+import { PostHogProvider } from "@/components/providers/PostHogProvider";
 
 const inter = Inter({
   subsets: ["latin"],
@@ -36,7 +37,9 @@ export default function RootLayout({
         )}
       >
         <SessionProvider>
-          {children}
+          <PostHogProvider>
+            {children}
+          </PostHogProvider>
         </SessionProvider>
       </body>
     </html>
