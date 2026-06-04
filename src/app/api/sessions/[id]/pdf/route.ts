@@ -41,10 +41,10 @@ export async function GET(req: NextRequest, { params }: { params: Promise<{ id: 
       startY: 50,
       head: [['Property', 'Value']],
       body: [
-        ['Role', session.role || 'Software Engineer'],
+        ['Round Type', session.roundType || 'General Interview'],
         ['Company', session.company?.name || 'General Tech'],
         ['Overall Score', `${session.overallScore || 0}%`],
-        ['Duration', `${session.durationMinutes || 0} minutes`],
+        ['Duration', `${Math.round((session.durationSeconds || 0) / 60)} minutes`],
         ['Status', session.status],
       ],
       theme: 'striped',
