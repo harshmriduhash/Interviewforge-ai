@@ -1,6 +1,9 @@
 import Stripe from "stripe";
 
-export const stripe = new Stripe(process.env.STRIPE_SECRET_KEY || "", {
+// Build-safe Stripe instantiation
+const stripeKey = process.env.STRIPE_SECRET_KEY;
+
+export const stripe = new Stripe(stripeKey || "sk_test_placeholder", {
   apiVersion: "2026-05-27.dahlia" as any,
   typescript: true,
 });

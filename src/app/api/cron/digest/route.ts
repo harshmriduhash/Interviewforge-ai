@@ -5,68 +5,70 @@ import { Resend } from "resend";
 const resend = new Resend(process.env.RESEND_API_KEY || "");
 const SENDER = process.env.SYSTEM_SENDER_EMAIL || "noreply@interviewforge.ai";
 
+export const dynamic = "force-dynamic";
+
 /**
  * Weekly email digest cron job.
  * Call via Vercel Cron or external scheduler: POST /api/cron/digest
  * Protected by CRON_SECRET header.
  */
 export async function POST(req: NextRequest) {
-    // Verify cron secret
-    const authHeader = req.headers.get("authorization");
-    const cronSecret = process.env.CRON_SECRET;
-    if (cronSecret && authHeader !== `Bearer ${cronSecret}`) {
-        return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
-    }
+  // Verify cron secret
+  const authHeader = req.headers.get("authorization");
+  const cronSecret = process.env.CRON_SECRET;
+  if (cronSecret && authHeader !== `Bearer ${cronSecret}`) {
+    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  }
 
-    try {
-        const oneWeekAgo = new Date();
-        oneWeekAgo.setDate(oneWeekAgo.getDate() - 7);
+  try {
+    const oneWeekAgo = new Date();
+    oneWeekAgo.setDate(oneWeekAgo.getDate() - 7);
 
-        // Find users with sessions in the last 7 days
-        const activeUsers = await prisma.user.findMany({
-            where: {
-                sessions: {
-                    some: {
-                        createdAt: { gte: oneWeekAgo },
-                        status: "completed",
-                    },
-                },
-                deletedAt: null,
-            },
-            include: {
-                userProgress: true,
-                sessions: {
-                    where: {
-                        createdAt: { gte: oneWeekAgo },
-                        status: "completed",
-                    },
-                    orderBy: { createdAt: "desc" },
-                },
-            },
-        });
+    // Find users with sessions in the last 7 days
+    const activeUsers = await prisma.user.findMany({
+      where: {
+        sessions: {
+          some: {
+            createdAt: { gte: oneWeekAgo },
+            status: "completed",
+          },
+        },
+        deletedAt: null,
+      },
+      include: {
+        userProgress: true,
+        sessions: {
+          where: {
+            createdAt: { gte: oneWeekAgo },
+            status: "completed",
+          },
+          orderBy: { createdAt: "desc" },
+        },
+      },
+    });
 
-        let sentCount = 0;
-        let errorCount = 0;
+    let sentCount = 0;
+    let errorCount = 0;
 
-        for (const user of activeUsers) {
-            const sessionsThisWeek = user.sessions.length;
-            const avgScore =
-                user.sessions.length > 0
-                    ? Math.round(
-                        user.sessions.reduce((acc, s) => acc + Number(s.overallScore || 0), 0) /
-                        user.sessions.length
-                    )
-                    : 0;
-            const readiness = user.userProgress
-                ? Number(user.userProgress.readinessScore).toFixed(0)
-                : "N/A";
-            const streak = user.userProgress?.currentStreak || 0;
-            const weakTopics =
-                user.userProgress?.weakTopics?.length
-                    ? user.userProgress.weakTopics.join(", ")
-                    : "None identified yet";
+    for (const user of activeUsers) {
+      const sessionsThisWeek = user.sessions.length;
+      const avgScore =
+        user.sessions.length > 0
+          ? Math.round(
+            user.sessions.reduce((acc, s) => acc + Number(s.overallScore || 0), 0) /
+            user.sessions.length
+          )
+          : 0;
+      const readiness = user.userProgress
+        ? Number(user.userProgress.readinessScore).toFixed(0)
+        : "N/A";
+      const streak = user.userProgress?.currentStreak || 0;
+      const weakTopics =
+        user.userProgress?.weakTopics?.length
+          ? user.userProgress.weakTopics.join(", ")
+          : "None identified yet";
 
-            const html = `
+      const html = `
       <!DOCTYPE html>
       <html>
       <head>
@@ -134,30 +136,30 @@ export async function POST(req: NextRequest) {
       </body>
       </html>`;
 
-            try {
-                if (process.env.RESEND_API_KEY && !process.env.RESEND_API_KEY.startsWith("PLACEHOLDER")) {
-                    await resend.emails.send({
-                        from: SENDER,
-                        to: user.email,
-                        subject: `🔥 Weekly Forge Digest: ${sessionsThisWeek} sessions, ${avgScore}% avg`,
-                        html,
-                    });
-                }
-                sentCount++;
-            } catch (err) {
-                console.error(`Failed to send digest to ${user.email}:`, err);
-                errorCount++;
-            }
+      try {
+        if (process.env.RESEND_API_KEY && !process.env.RESEND_API_KEY.startsWith("PLACEHOLDER")) {
+          await resend.emails.send({
+            from: SENDER,
+            to: user.email,
+            subject: `🔥 Weekly Forge Digest: ${sessionsThisWeek} sessions, ${avgScore}% avg`,
+            html,
+          });
         }
-
-        return NextResponse.json({
-            success: true,
-            sent: sentCount,
-            errors: errorCount,
-            totalUsers: activeUsers.length,
-        });
-    } catch (error) {
-        console.error("Digest cron error:", error);
-        return NextResponse.json({ error: "Digest cron failed" }, { status: 500 });
+        sentCount++;
+      } catch (err) {
+        console.error(`Failed to send digest to ${user.email}:`, err);
+        errorCount++;
+      }
     }
+
+    return NextResponse.json({
+      success: true,
+      sent: sentCount,
+      errors: errorCount,
+      totalUsers: activeUsers.length,
+    });
+  } catch (error) {
+    console.error("Digest cron error:", error);
+    return NextResponse.json({ error: "Digest cron failed" }, { status: 500 });
+  }
 }
