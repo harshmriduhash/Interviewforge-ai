@@ -6,6 +6,8 @@ import { useState, useEffect, useRef } from "react";
 import { cn } from "@/lib/utils";
 import Link from "next/link";
 import { useParams, useRouter } from "next/navigation";
+import { toast } from "sonner";
+import { trackEvent } from "@/lib/posthog";
 
 const DIFF_COLORS: Record<string, string> = {
   easy: "#22C55E", medium: "#F59E0B", hard: "#EF4444", uber_hard: "#9333EA",
@@ -24,6 +26,7 @@ export default function SessionInterface() {
   const [sidebarOpen, setSidebarOpen] = useState(true);
   const [elapsedSeconds, setElapsedSeconds] = useState(0);
   const [notes, setNotes] = useState("");
+  const [currentDifficulty, setCurrentDifficulty] = useState("medium");
 
   // Live Scores Tracking
   const [scores, setScores] = useState({
@@ -46,6 +49,15 @@ export default function SessionInterface() {
       .then(r => r.json())
       .then(data => {
         setSessionData(data);
+        setCurrentDifficulty(data.difficulty || "medium");
+
+        trackEvent("session_started", {
+          sessionId,
+          company: data.company?.slug,
+          roundType: data.roundType,
+          initialDifficulty: data.difficulty,
+        });
+
         const introText = `Welcome to your ${data.company?.name || "General"} ${data.roundType?.replace("_", " ")} interview. Let's begin. How would you handle high-throughput consistency tradeoffs in a large-scale database?`;
         setTranscript(introText);
         speakText(introText);
@@ -199,7 +211,7 @@ export default function SessionInterface() {
           question: transcript,
           answer: spokenText,
           roundType: sessionData?.roundType,
-          difficulty: sessionData?.difficulty,
+          difficulty: currentDifficulty,
           exchangeCount: exchangesCount,
         }),
       });
@@ -228,6 +240,30 @@ export default function SessionInterface() {
       const nextPrompt = ai_response || "Let me ask you another question.";
       setTranscript(nextPrompt);
       speakText(nextPrompt);
+
+      // Adaptive Difficulty Loop (§8.2)
+      if (next_action === "increase_difficulty" || next_action === "decrease_difficulty") {
+        const diffs = ["easy", "medium", "hard", "uber_hard"];
+        const currentIndex = diffs.indexOf(currentDifficulty);
+        let nextIndex = currentIndex;
+
+        if (next_action === "increase_difficulty" && currentIndex < diffs.length - 1) {
+          nextIndex++;
+        } else if (next_action === "decrease_difficulty" && currentIndex > 0) {
+          nextIndex--;
+        }
+
+        if (nextIndex !== currentIndex) {
+          const newDiff = diffs[nextIndex];
+          setCurrentDifficulty(newDiff);
+          toast.info(`Difficulty adjusted: Now ${newDiff.replace('_', ' ')}`, {
+            description: next_action === "increase_difficulty"
+              ? "You're doing great! Pushing the bar higher."
+              : "Let's calibrate the level to your current pace.",
+            icon: <Zap className="w-4 h-4 text-primary" />,
+          });
+        }
+      }
 
       // Save the exchange to DB
       saveExchangeToDb(nextPrompt, spokenText, newScores, evaluation.feedback_summary || "");
@@ -296,6 +332,17 @@ export default function SessionInterface() {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(finalScores),
       });
+
+      // Update longitudinal memory (§12.4)
+      await fetch("/api/users/me/progress", { method: "PATCH" });
+
+      trackEvent("session_completed", {
+        sessionId,
+        score: finalScores.overallScore,
+        duration: elapsedSeconds,
+        questions: exchangesCount,
+      });
+
       router.push(`/session/${sessionId}/report`);
     } catch (e) {
       console.error(e);
