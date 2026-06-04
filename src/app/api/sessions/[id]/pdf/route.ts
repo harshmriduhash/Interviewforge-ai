@@ -10,7 +10,9 @@ export async function GET(req: NextRequest, { params }: { params: Promise<{ id: 
     const session = await prisma.session.findUnique({
       where: { id: sessionId },
       include: {
-        exchanges: true,
+        exchanges: {
+          orderBy: { exchangeOrder: 'asc' }
+        },
         company: true,
       },
     });
@@ -67,21 +69,18 @@ export async function GET(req: NextRequest, { params }: { params: Promise<{ id: 
 
     // Transcript
     doc.addPage();
+    doc.setFontSize(16);
     doc.text("Interview Transcript", 20, 20);
 
-    const exchanges = session.exchanges.map((ex, i) => [
-      `Q${i + 1}`,
-      ex.questionText,
-      `A${i + 1}`,
-      ex.answerText
-    ]).flat();
+    const tableBody = session.exchanges.flatMap((ex, i) => [
+      [{ content: `Q${i + 1}: ${ex.aiQuestion}`, styles: { fontStyle: 'bold' as const, textColor: [255, 92, 0] as [number, number, number] } }],
+      [{ content: `A: ${ex.userAnswerText || "No response recorded."}`, styles: { textColor: [30, 30, 30] as [number, number, number] } }],
+      [{ content: "", styles: { cellPadding: 1 } }] // Spacer
+    ]);
 
     autoTable(doc, {
       startY: 30,
-      body: session.exchanges.map((ex, i) => [
-        { content: `Q${i + 1}: ${ex.questionText}`, styles: { fontStyle: 'bold', textColor: [255, 92, 0] } },
-        { content: `A: ${ex.answerText}`, styles: { textColor: [30, 30, 30] } }
-      ]).flat().map(c => [c]),
+      body: tableBody,
       theme: 'plain',
       styles: { fontSize: 9, cellPadding: 2 }
     });
