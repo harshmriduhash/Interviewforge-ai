@@ -185,30 +185,19 @@ export default function ProgressPage() {
               </div>
               <span className="text-text-muted text-xs font-bold uppercase tracking-widest">Consistency Map</span>
             </div>
-
-            <div className="overflow-x-auto pb-2">
-              <div className="flex gap-1.5 min-w-[700px]">
-                {/* 25 columns representing active calendar blocks */}
-                {Array.from({ length: 26 }).map((_, colIndex) => (
-                  <div key={colIndex} className="flex flex-col gap-1.5 flex-1">
-
-                    return (
-                    <div
-                      key={rowIndex}
-                      className="w-full aspect-square rounded-sm transition-all hover:scale-125"
-                      style={{
-                        background: opacity > 0.05 ? `rgba(255, 92, 0, ${opacity})` : "#2E2E2E",
-                        border: `1px solid ${opacity > 0.05 ? "rgba(255, 92, 0, 0.4)" : "transparent"}`,
-                      }}
-                      title={day ? `${day.date}: ${day.count} sessions completed` : "No activity"}
-                    />
-                    );
-                    })}
-                  </div>
-                ))}
-              </div>
+            <div className="flex flex-wrap gap-1">
+              {activity.map((day, i) => (
+                <div
+                  key={i}
+                  className={`w-3 h-3 rounded-sm ${day.count === 0 ? "bg-[#2E2E2E]" :
+                    day.count === 1 ? "bg-[rgba(255,92,0,0.3)]" :
+                      day.count === 2 ? "bg-[rgba(255,92,0,0.6)]" :
+                        "bg-[rgba(255,92,0,0.9)]"
+                    }`}
+                  title={`${day.date}: ${day.count} sessions`}
+                />
+              ))}
             </div>
-
             <div className="flex items-center justify-between text-xs text-text-muted">
               <span>Past 6 Months</span>
               <div className="flex items-center gap-2">
