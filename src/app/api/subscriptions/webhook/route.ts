@@ -32,7 +32,7 @@ export async function POST(req: NextRequest) {
                 if (!userId) break;
 
                 const subscriptionId = session.subscription as string;
-                const subscription = await stripe.subscriptions.retrieve(subscriptionId);
+                const subscription = await stripe.subscriptions.retrieve(subscriptionId) as any;
 
                 // Create or update subscription record
                 await prisma.subscription.upsert({
@@ -40,7 +40,10 @@ export async function POST(req: NextRequest) {
                     create: {
                         userId,
                         stripeSubscriptionId: subscriptionId,
-
+                        stripePriceId: subscription.items.data[0]?.price?.id || null,
+                        status: "active",
+                        currentPeriodStart: new Date(subscription.current_period_start * 1000),
+                        currentPeriodEnd: new Date(subscription.current_period_end * 1000),
                     },
                     update: {
                         stripeSubscriptionId: subscriptionId,
@@ -64,7 +67,7 @@ export async function POST(req: NextRequest) {
             }
 
             case "invoice.paid": {
-                const invoice = event.data.object as Stripe.Invoice;
+                const invoice = event.data.object as any;
                 const subscriptionId = invoice.subscription as string;
                 if (!subscriptionId) break;
 
@@ -72,7 +75,7 @@ export async function POST(req: NextRequest) {
                     where: { stripeSubscriptionId: subscriptionId },
                 });
                 if (sub) {
-                    const stripeSub = await stripe.subscriptions.retrieve(subscriptionId);
+                    const stripeSub = await stripe.subscriptions.retrieve(subscriptionId) as any;
                     await prisma.subscription.update({
                         where: { id: sub.id },
                         data: {
@@ -110,7 +113,7 @@ export async function POST(req: NextRequest) {
             }
 
             case "invoice.payment_failed": {
-                const invoice = event.data.object as Stripe.Invoice;
+                const invoice = event.data.object as any;
                 const subscriptionId = invoice.subscription as string;
                 if (!subscriptionId) break;
 
