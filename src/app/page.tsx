@@ -3,6 +3,7 @@ import { Hero } from "@/components/landing/Hero";
 import { Problem } from "@/components/landing/Problem";
 import { HowItWorks } from "@/components/landing/HowItWorks";
 import { Features } from "@/components/landing/Features";
+import DemoWidget from "@/components/landing/DemoWidget";
 import { Pricing } from "@/components/landing/Pricing";
 import { Testimonials } from "@/components/landing/Testimonials";
 import { FAQ } from "@/components/landing/FAQ";
@@ -17,6 +18,7 @@ export default function LandingPage() {
                 <Problem />
                 <HowItWorks />
                 <Features />
+                <DemoWidget />
                 <Pricing />
                 <Testimonials />
                 <FAQ />
