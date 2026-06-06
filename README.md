@@ -89,7 +89,7 @@ graph LR
 ### 1. Infrastructure Requirements
 ```bash
 # Clone the repository
-git clone https://github.com/org/interviewforge-ai.git
+git clone https://github.com/harshmriduhash/interviewforge-ai.git
 
 # Initialize the Postgres/Prisma layer
 npx prisma db push && npx prisma db seed
