@@ -1,6 +1,9 @@
-@import "tailwindcss";
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
 
-@theme {
+/* Theme variables (moved from @theme for broad compatibility) */
+:root {
   /* Brand Colors */
   --color-primary: #FF5C00;
   --color-primary-hover: #E64D00;
