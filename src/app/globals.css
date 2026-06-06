@@ -193,3 +193,29 @@ body {
 ::-webkit-scrollbar-thumb:hover {
   background: var(--color-text-muted);
 }
+
+/* Form element fallbacks (ensure visuals even if Tailwind utilities are missing) */
+textarea,
+input,
+select,
+button {
+  background-color: var(--color-surface-2);
+  color: var(--color-text-primary);
+  border-color: var(--color-border);
+}
+
+textarea {
+  resize: none;
+}
+
+/* Strong override for textarea background when utility classes aren't applied correctly */
+textarea.bg-surface-2,
+textarea[class*="bg-surface"] {
+  background-color: var(--color-surface-2) !important;
+  color: var(--color-text-primary) !important;
+  border: 1px solid var(--color-border) !important;
+}
+
+textarea::placeholder {
+  color: var(--color-text-muted) !important;
+}
