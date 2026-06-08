@@ -1,6 +1,25 @@
 import { NextRequest, NextResponse } from "next/server";
+import { getToken } from "next-auth/jwt";
 
-export function middleware(request: NextRequest) {
+export async function middleware(request: NextRequest) {
+    const { pathname } = request.nextUrl;
+
+    // 1. Protect Dashboard & Session Routes
+    const isProtectedRoute = pathname.startsWith("/dashboard") || pathname.startsWith("/session");
+
+    if (isProtectedRoute) {
+        const token = await getToken({
+            req: request,
+            secret: process.env.NEXTAUTH_SECRET || "interviewforge-secret-key-12345",
+        });
+
+        if (!token) {
+            const url = new URL("/auth/login", request.url);
+            url.searchParams.set("callbackUrl", encodeURI(request.url));
+            return NextResponse.redirect(url);
+        }
+    }
+
     const response = NextResponse.next();
     const nonce = Buffer.from(crypto.randomUUID()).toString("base64");
 
