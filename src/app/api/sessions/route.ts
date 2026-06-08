@@ -48,9 +48,9 @@ export async function POST(req: NextRequest) {
   const user = await prisma.user.findUnique({ where: { id: userId } });
   if (user?.tier === "free") {
     const sessionCount = await prisma.session.count({
-      where: { userId, status: { in: ["completed", "active"] } }, // count only meaningful sessions
+      where: { userId, status: { in: ["completed", "active"] } },
     });
-    if (sessionCount >= 3) {
+    if (sessionCount >= 10) {
       return NextResponse.json(
         { error: "Free tier limit reached. Please upgrade to Pro for unlimited sessions." },
         { status: 403 }
