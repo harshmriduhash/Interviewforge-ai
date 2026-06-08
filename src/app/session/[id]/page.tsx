@@ -348,41 +348,46 @@ export default function SessionInterface() {
     window.speechSynthesis.cancel();
     if (timerRef.current) clearInterval(timerRef.current);
 
-    // Compute final overall averages
-    const finalScores = {
-      status: "completed",
-      durationSeconds: elapsedSeconds,
-      overallScore: (scores.technical + scores.communication + scores.structure) / 3 || 78,
-      scoreTechnical: scores.technical || 80,
-      scoreCommunication: scores.communication || 78,
-      scoreStructure: scores.structure || 82,
-      scoreDepth: 75,
-      scoreConfidence: 85,
-      scoreFillerWords: 88,
-      scoreResponseTime: 80,
-    };
+    setIsThinking(true); // Re-use thinking state for grading
+    setAiState("evaluating");
+    setTranscript("Synthesizing your full interview performance audit... This may take a few seconds.");
 
     try {
+      // 1. Mark session as active/ending and record final time
       await fetch(`/api/sessions/${sessionId}`, {
         method: "PATCH",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(finalScores),
+        body: JSON.stringify({
+          status: "active",
+          durationSeconds: elapsedSeconds,
+        }),
       });
 
-      // Update longitudinal memory (§12.4)
+      // 2. Trigger AI Grading Audit
+      const gradeRes = await fetch(`/api/sessions/${sessionId}/grade`, {
+        method: "POST",
+      });
+
+      if (!gradeRes.ok) throw new Error("Grading failed");
+
+      // 3. Update longitudinal memory
       await fetch("/api/users/me/progress", { method: "PATCH" });
 
       trackEvent("session_completed", {
         sessionId,
-        score: finalScores.overallScore,
         duration: elapsedSeconds,
         questions: exchangesCount,
       });
 
       router.push(`/session/${sessionId}/report`);
     } catch (e) {
-      console.error(e);
-      router.push("/dashboard/sessions");
+      console.error("Grading error:", e);
+      toast.error("Grading Audit Failed", {
+        description: "We couldn't synthesize the final report, but your session was saved."
+      });
+      router.push(`/session/${sessionId}/report`);
+    } finally {
+      setIsThinking(false);
     }
   };
 
