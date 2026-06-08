@@ -92,24 +92,22 @@ export default function ReportInterface() {
     );
   }
 
-  const overallScore = Number(session.overallScore || 78).toFixed(0);
+  const overallScore = Number(session.overallScore || 0).toFixed(0);
 
   const radarData = [
-    { subject: 'Technical Accuracy', val: Number(session.scoreTechnical || 80) },
-    { subject: 'Communication', val: Number(session.scoreCommunication || 78) },
-    { subject: 'Structure', val: Number(session.scoreStructure || 82) },
-    { subject: 'Depth', val: Number(session.scoreDepth || 75) },
-    { subject: 'Confidence', val: Number(session.scoreConfidence || 85) },
-    { subject: 'Filler Control', val: Number(session.scoreFillerWords || 88) },
-    { subject: 'Pacing', val: Number(session.scoreResponseTime || 80) },
+    { subject: 'Technical Accuracy', val: Number(session.scoreTechnical || 0) },
+    { subject: 'Communication', val: Number(session.scoreCommunication || 0) },
+    { subject: 'Structure', val: Number(session.scoreStructure || 0) },
+    { subject: 'Depth', val: Number(session.scoreDepth || 0) },
+    { subject: 'Confidence', val: Number(session.scoreConfidence || 0) },
+    { subject: 'Filler Control', val: Number(session.scoreFillerWords || 0) },
+    { subject: 'Pacing', val: Number(session.scoreResponseTime || 0) },
   ];
 
-  const fillerData = [
-    { word: 'um', count: 4 },
-    { word: 'like', count: 3 },
-    { word: 'uh', count: 2 },
-    { word: 'you know', count: 1 },
-    { word: 'actually', count: 1 },
+  const fillerData = (session.fillerWordsDetail as any[]) || [
+    { word: 'um', count: 0 },
+    { word: 'like', count: 0 },
+    { word: 'uh', count: 0 },
   ];
 
   const level = session.difficulty?.replace("_", " ") || "medium";
@@ -175,10 +173,10 @@ export default function ReportInterface() {
 
         {/* Section 2: AI Summary & Action Items */}
         <section className="grid lg:grid-cols-2 gap-8">
-          <div className="glass p-8 rounded-3xl space-y-6">
+          <div className="lg:col-span-2 glass p-8 rounded-3xl space-y-6">
             <h3 className="text-white font-bold text-lg border-b border-border/40 pb-4">Executive Summary</h3>
             <p className="text-text-primary leading-relaxed text-sm">
-              Your performance on this {session.roundType?.replace("_", " ")} mock round was highly structural. You demonstrated key problem isolation skills and successfully addressed concurrency challenges. To further elevate your readiness, consider deep-diving into granular indexing structures and lowering filler word counts.
+              {session.aiSummary || "Your performance audit is being compiled. Please speak more in next sessions to get detailed insights."}
             </p>
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-4">
               <div className="p-4 bg-success/10 border border-success/20 rounded-2xl">
@@ -187,8 +185,11 @@ export default function ReportInterface() {
                   Core Strengths
                 </div>
                 <ul className="text-xs text-text-secondary space-y-2 list-none p-0">
-                  <li>• Outstanding System Structure</li>
-                  <li>• High Technical Accuracy</li>
+                  {session.aiStrengths?.length > 0 ? (
+                    session.aiStrengths.map((s: string, i: number) => <li key={i}>• {s}</li>)
+                  ) : (
+                    <li>• Evaluating performance...</li>
+                  )}
                 </ul>
               </div>
               <div className="p-4 bg-error/10 border border-error/20 rounded-2xl">
@@ -197,8 +198,11 @@ export default function ReportInterface() {
                   Areas to Optimize
                 </div>
                 <ul className="text-xs text-text-secondary space-y-2 list-none p-0">
-                  <li>• Granular Indexing Trade-offs</li>
-                  <li>• Speech Filler Reduction</li>
+                  {session.aiWeaknesses?.length > 0 ? (
+                    session.aiWeaknesses.map((w: string, i: number) => <li key={i}>• {w}</li>)
+                  ) : (
+                    <li>• Measuring precision gaps...</li>
+                  )}
                 </ul>
               </div>
             </div>
@@ -209,21 +213,21 @@ export default function ReportInterface() {
               <Sparkles className="w-5 h-5 text-primary" /> Action Plan
             </h3>
             <div className="space-y-4">
-              {[
-                { title: 'Explain Consistency Trade-offs', type: 'Technical Design', res: 'System Design Primer (Vol 2)' },
-                { title: 'Filler Control Exercises', type: 'Speech Clarity', res: 'InterviewForge Spoken Gym' },
-                { title: 'Database Indexing Trade-offs', type: 'Algorithms & Schema', res: 'Stripe Dev Logs' },
-              ].map((item, i) => (
-                <div key={i} className="flex items-center gap-4 group">
-                  <div className="w-10 h-10 rounded-xl bg-surface border border-border flex items-center justify-center text-primary">
-                    <TrendingUp className="w-4 h-4" />
+              {session.aiActionPlan && (session.aiActionPlan as any[]).length > 0 ? (
+                (session.aiActionPlan as any[]).map((item, i) => (
+                  <div key={i} className="flex items-center gap-4 group">
+                    <div className="w-10 h-10 rounded-xl bg-surface border border-border flex items-center justify-center text-primary">
+                      <TrendingUp className="w-4 h-4" />
+                    </div>
+                    <div className="flex-1">
+                      <h4 className="text-white font-bold text-[14px]">{item.title}</h4>
+                      <p className="text-text-muted text-[11px] mt-0.5">{item.type} · Resource: {item.resource || item.res}</p>
+                    </div>
                   </div>
-                  <div className="flex-1">
-                    <h4 className="text-white font-bold text-[14px]">{item.title}</h4>
-                    <p className="text-text-muted text-[11px] mt-0.5">{item.type} · Resource: {item.res}</p>
-                  </div>
-                </div>
-              ))}
+                ))
+              ) : (
+                <p className="text-text-muted text-xs italic">Generate more session data for custom action items.</p>
+              )}
             </div>
           </div>
         </section>
