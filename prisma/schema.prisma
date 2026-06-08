@@ -86,6 +86,10 @@ model Session {
   transcriptUrl       String?   // S3 URL of full transcript
   reportUrl           String?   // S3 URL of PDF report
   shareToken          String?   @unique // Public share token for report
+  aiSummary           String?   @db.Text
+  aiStrengths         String[]
+  aiWeaknesses        String[]
+  aiActionPlan        Json?
   createdAt           DateTime  @default(now())
 
   user                User      @relation(fields: [userId], references: [id], onDelete: Cascade)
