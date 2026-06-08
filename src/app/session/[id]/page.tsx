@@ -43,6 +43,20 @@ export default function SessionInterface() {
   const socketRef = useRef<WebSocket | null>(null);
   const timerRef = useRef<any>(null);
 
+  // New manual control
+  const handleRecalibrate = () => {
+    window.speechSynthesis.cancel();
+    if (recognitionRef.current) {
+      try {
+        recognitionRef.current.stop();
+      } catch (e) {
+        console.warn("Recognition stop failed:", e);
+      }
+    }
+    toast.success("Microphone recalibrated", { description: "Click the mic icon or speak now." });
+    setTimeout(() => startListening(), 500);
+  };
+
   // 1. Fetch Session Details on Mount
   useEffect(() => {
     fetch(`/api/sessions/${sessionId}`)
@@ -155,6 +169,7 @@ export default function SessionInterface() {
     const SpeechRecognition = (window as any).SpeechRecognition || (window as any).webkitSpeechRecognition;
     if (!SpeechRecognition) {
       setUserText("Speech recognition not supported in this browser.");
+      toast.error("Browser not supported", { description: "Your browser doesn't support the Web Speech API. Please try Chrome or Edge." });
       return;
     }
 
@@ -163,6 +178,15 @@ export default function SessionInterface() {
     rec.continuous = false;
     rec.interimResults = true;
     rec.lang = "en-US";
+
+    rec.onstart = () => {
+      console.log("Recognition started");
+      toast("Microphone Active", {
+        description: "Speak your answer clearly...",
+        icon: <Mic className="w-4 h-4 text-primary" />,
+        duration: 2000,
+      });
+    };
 
     rec.onresult = (event: any) => {
       let interimTranscript = "";
@@ -182,9 +206,21 @@ export default function SessionInterface() {
     rec.onerror = (e: any) => {
       console.warn("Speech recognition error:", e);
       setAiState("idle");
+
+      if (e.error === 'no-speech') {
+        toast.warning("No speech detected", { description: "Try speaking again or click 'Recalibrate' in the top bar." });
+      } else if (e.error === 'not-allowed') {
+        toast.error("Microphone blocked", { description: "Please ensure you have granted microphone permissions in your browser settings." });
+      } else {
+        toast.error("Microphone error", { description: "We couldn't catch that. Try the Recalibrate button." });
+      }
     };
 
-    rec.start();
+    try {
+      rec.start();
+    } catch (err) {
+      console.error("Failed to start recognition:", err);
+    }
   };
 
   // 5. Evaluate response — calls real Gemini AI
@@ -378,6 +414,12 @@ export default function SessionInterface() {
           </div>
         </div>
         <div className="flex items-center gap-4">
+          <button
+            className="px-4 py-2 bg-surface hover:bg-surface-2 text-white font-bold rounded-lg text-sm border border-border transition-all flex items-center gap-2"
+            onClick={handleRecalibrate}
+          >
+            <Zap className="w-4 h-4 text-primary" /> Recalibrate Mic
+          </button>
           <button className="px-4 py-2 bg-error text-white font-bold rounded-lg text-sm hover:bg-error/85 transition-all flex items-center gap-2" onClick={handleEndSession}>
             <X className="w-4 h-4" /> End Session & Grade
           </button>
