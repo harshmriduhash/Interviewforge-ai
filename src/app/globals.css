@@ -5,7 +5,8 @@
 /* Theme variables (moved from @theme for broad compatibility) */
 :root {
   /* Brand Colors */
-  --color-primary: #FF5C00;
+  --color-primary: 255 92 0;
+  --color-primary-hex: #FF5C00;
   --color-primary-hover: #E64D00;
   --color-primary-light: rgba(255, 92, 0, 0.15);
 

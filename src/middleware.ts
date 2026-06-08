@@ -23,10 +23,10 @@ export async function middleware(request: NextRequest) {
     const response = NextResponse.next();
     const nonce = Buffer.from(crypto.randomUUID()).toString("base64");
 
-    // Content Security Policy
+    // Content Security Policy (Simplified for development & library compatibility)
     const csp = [
         `default-src 'self'`,
-        `script-src 'self' 'nonce-${nonce}' 'strict-dynamic' 'unsafe-eval' https://us.i.posthog.com`,
+        `script-src 'self' 'unsafe-inline' 'unsafe-eval' https://us.i.posthog.com`,
         `style-src 'self' 'unsafe-inline' https://fonts.googleapis.com`,
         `img-src 'self' data: blob: https:`,
         `font-src 'self' https://fonts.gstatic.com`,
