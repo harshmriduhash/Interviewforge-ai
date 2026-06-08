@@ -1,122 +1,193 @@
-# 🎙️ InterviewForge AI: The Agentic Future of Engineering Talent
+# 🎙️ InterviewForge AI
 
-[![Production Ready](https://img.shields.io/badge/Status-Production--Ready-FF5C00.svg)](#)
-[![Valuation](https://img.shields.io/badge/Market--Cap-%24100M+--Vision-blue.svg)](#)
-[![Stack](https://img.shields.io/badge/Stack-Next.js%20|%20Gemini%20|%20Pinecone-black.svg)](#)
+[![Live](https://img.shields.io/badge/Live-interviewforge--ai--web.vercel.app-FF5C00.svg)](https://interviewforge-ai-web.vercel.app)
+[![Next.js](https://img.shields.io/badge/Next.js-16.2-black.svg)](#)
+[![AI](https://img.shields.io/badge/AI-Gemini%201.5%20Flash-4285F4.svg)](#)
+[![Database](https://img.shields.io/badge/DB-Neon%20PostgreSQL-00E599.svg)](#)
 
-> **"Silent practice is dead. The next generation of engineers speaks their code."**
+> **The world's first Voice-First Agentic Interview Coach.** Practice speaking your solutions out loud — not just writing code in silence.
 
-InterviewForge AI is the world's first **Voice-First Agentic Interview Coach**. We have built a high-fidelity, real-time simulator that bridges the cognitive gap between "solving a problem" and "communicating a solution." By replicating the high-pressure environment of FAANG interview panels, InterviewForge transforms the $2.5B technical preparation market from passive consumption into active, vocal mastery.
+InterviewForge AI replicates the high-pressure environment of FAANG interview panels using real-time voice interaction and AI-driven evaluation. It bridges the gap between **solving a problem** and **communicating a solution**.
 
----
-
-## 🎯 The $100M Problem: The "Cognitive Collapse"
-
-In the modern technical interview, 95% of software engineers fail not because of logic, but because of **Cognitive Friction**.
-* **The Vocal Deficit**: Candidates spend 1,000+ hours on LeetCode in silence. In the real room, they are asked to simultaneously design a distributed lock *and* explain p99 latency trade-offs out loud. This results in verbal collapse.
-* **The Feedback Vacuum**: Traditional mock interviews are inconsistent, unscalable, and prohibitively expensive ($200+/hr).
-* **Memory Decay**: Without a longitudinal tracking system, candidates repeat the same architectural errors across every session.
+🔗 **Live Demo:** [interviewforge-ai-web.vercel.app](https://interviewforge-ai-web.vercel.app)
 
 ---
 
-## 🧠 The Solution: The Forge Engine
+## 🎯 The Problem
 
-InterviewForge AI introduces a persistent, agentic technical coach that plays the role of a Principal Engineer (L7) from companies like Google, Meta, or Stripe.
+95% of software engineers fail technical interviews not because of logic, but because of **Cognitive Friction**:
 
-### 1. Adaptive Real-time Calibration
-Our engine doesn't just ask questions; it **calibrates**. Using the **Gemini 1.5 Flash** evaluation loop, the "Forge" reads your communication flow and technical depth in real-time, dynamically adjusting its next move:
-* `FOLLOWUP`: Probes deeper into your specific architectural choices.
-* `ADAPTIVE_DIFFICULTY`: Shifts from `medium` to `uber_hard` if you demonstrate rapid mastery.
-* `PRESSURE_TEST`: Injects sudden constraints (e.g., "What if the network partition is permanent?") to test resilience.
-
-### 2. RAG-Powered Contextual Intelligence
-Leveraging a **Pinecone Vector Database**, the Forge retrieves questions and follow-ups based on:
-* **The "Weak Spot" Tracker**: Automatically prioritizes topics where your historical average falls below 70%.
-* **The Company Profile**: Tailors rubrics to the specific "cultural bar" of your target employer (e.g., Google's "Googliness" vs. Stripe's "Operating at all Levels").
+- **Vocal Deficit** — 1,000+ hours on LeetCode in silence, then asked to explain p99 latency trade-offs out loud.
+- **Feedback Vacuum** — Traditional mock interviews are inconsistent and expensive ($200+/hr).
+- **Memory Decay** — Without longitudinal tracking, candidates repeat the same mistakes.
 
 ---
 
-## 🚀 Platform Capabilities
+## ✨ Key Features
 
-| Feature | Description | Impact |
-| :--- | :--- | :--- |
-| **Voice-First Loop** | High-fidelity TTS/STT via Deepgram & ElevenLabs | 100% immersive simulation |
-| **Longitudinal Memory** | Persistent user profile stored in Prisma + Pinecone | 0% redundant practice |
-| **7-D Rubric** | Scoring across Technical, Communication, Structure, and more | Deep-dive optimization |
-| **Forge Digest** | Weekly AI-generated performance reports via Resend | Automated retention & growth |
-| **Pro Analytics** | Real-time GitHub-style activity contribution map | Psychology of consistency |
-| **Shareable Audits** | Encrypted public links for peer/mentor review | Social proof & feedback |
+| Feature | Description |
+|:---|:---|
+| **Voice-First Interview Loop** | Real-time TTS/STT simulation with an AI interviewer that speaks, listens, and adapts |
+| **AI Grading Audit** | Gemini 1.5 Flash analyzes your full transcript and generates a brutally honest 7-dimension report |
+| **Company-Specific Prep** | Tailored rubrics for Google, Meta, Amazon, Apple, Netflix, Stripe, and more |
+| **Adaptive Difficulty** | Engine calibrates in real-time — follow-up probes, pressure tests, difficulty scaling |
+| **Longitudinal Memory** | Persistent user profile tracks progress across sessions with streak tracking |
+| **Shareable Reports** | Encrypted public links for mentor/peer review |
+| **RAG Question Bank** | Pinecone-powered retrieval prioritizing your weak spots |
+| **Pro Analytics** | GitHub-style activity heatmap and radar chart performance visualization |
 
 ---
 
-## 🏗️ World-Class Architecture
-
-InterviewForge is built on a decoupled, high-performance micro-stack designed for sub-100ms latency in voice interactions.
+## 🏗️ Architecture
 
 ```mermaid
 graph LR
-    User((Engineer)) <-->|WebRTC/WS| VS[Voice Service]
-    VS <-->|STT/TTS| CloudAI[Deepgram/ElevenLabs]
-    VS <-->|Grader| Gemini[Gemini 1.5 Flash]
+    User((Engineer)) <-->|Voice| Session[Session Interface]
+    Session <-->|STT/TTS| SpeechAPI[Web Speech API]
+    Session -->|Evaluate| Gemini[Gemini 1.5 Flash]
     
-    User <-->|Next.js| WebApp[Forge Web Dashboard]
-    WebApp -->|Prisma| PG[(PostgreSQL)]
-    WebApp -->|RAG| PC[(Pinecone)]
-    WebApp -->|Events| PH[PostHog Analytics]
-    WebApp -->|Errors| Sentry[Sentry.io]
+    Session -->|Prisma ORM| DB[(Neon PostgreSQL)]
+    Gemini -->|Grade| DB
+    
+    User <-->|Next.js 16| Dashboard[Forge Dashboard]
+    Dashboard -->|Prisma| DB
+    Dashboard -->|RAG| Pinecone[(Pinecone Vectors)]
+    Dashboard -->|Email| Resend[Resend]
 ```
 
-### Technical Hardening
-* **Security**: Built-in CSRF protection, HSTS, CSP, and Redis-backed rate limiting.
-* **Resilience**: Account lockout mechanisms and graceful fallbacks for cloud service interruptions.
-* **Observability**: Complete monitoring through Sentry and deep-event logging via PostHog.
+### Tech Stack
+
+| Layer | Technology |
+|:---|:---|
+| **Framework** | Next.js 16.2 (App Router, Turbopack) |
+| **AI Engine** | Google Gemini 1.5 Flash |
+| **Database** | Neon PostgreSQL + Prisma ORM 7.8 |
+| **Vector DB** | Pinecone |
+| **Auth** | NextAuth.js (Credentials + OAuth) |
+| **Styling** | Tailwind CSS v4 |
+| **Charts** | Recharts |
+| **Payments** | Stripe |
+| **Email** | Resend |
+| **Monitoring** | Sentry + PostHog |
+| **Deployment** | Vercel |
 
 ---
 
-## 💎 The ROI: Precision Engineering Preparation
+## � Getting Started
 
-| Metrics | Traditional Mock | InterviewForge AI |
-| :--- | :--- | :--- |
-| **Cost** | ~$225 / Session | **Unlimited** / $29.99 mo |
-| **Availability** | Scheduled (24h lead) | **Instant** (0s lead) |
-| **Feedback** | Subjective / Human | **Objective / Data-Driven** |
-| **Consistency** | Low / Variable | **High / Mathematical** |
+### Prerequisites
 
----
+- Node.js 18+
+- A [Neon](https://neon.tech) PostgreSQL database
+- A [Google AI Studio](https://aistudio.google.com) API key (Gemini)
 
-## 🛠️ Deploy the Future
+### 1. Clone & Install
 
-### 1. Infrastructure Requirements
 ```bash
-# Clone the repository
 git clone https://github.com/harshmriduhash/interviewforge-ai.git
-
-# Initialize the Postgres/Prisma layer
-npx prisma db push && npx prisma db seed
+cd interviewforge-ai/interviewforge-ai-web
+npm install
 ```
 
-### 2. Environment (The Production Keys)
-Rename `.env.local` and inject your premium API keys for:
-* **AI Runtime**: `GEMINI_API_KEY`, `DEEPGRAM_API_KEY`, `ELEVENLABS_VOICE_ID`
-* **Intelligence Layer**: `PINECONE_API_KEY`, `PINECONE_INDEX`
-* **Ops Layer**: `STRIPE_SECRET_KEY`, `RESEND_API_KEY`, `SENTRY_DSN`, `NEXT_PUBLIC_POSTHOG_KEY`
+### 2. Configure Environment
 
-### 3. Execution
+Copy `.env.example` or create a `.env` file with:
+
+```env
+# Required
+DATABASE_URL="postgresql://user:password@host/dbname?sslmode=require"
+NEXTAUTH_SECRET="your-secret-key"          # Generate: openssl rand -base64 32
+NEXTAUTH_URL="http://localhost:3000"        # Change to your Vercel URL in prod
+GEMINI_API_KEY="your-gemini-api-key"
+
+# Optional (for full feature set)
+DEEPGRAM_API_KEY=""
+ELEVENLABS_API_KEY=""
+RESEND_API_KEY=""
+STRIPE_SECRET_KEY=""
+PINECONE_API_KEY=""
+```
+
+### 3. Initialize Database
+
 ```bash
-npm install
-npm run build
-npm run start
+npx prisma db push
+npx prisma db seed
+```
+
+### 4. Run
+
+```bash
+npm run dev
+```
+
+Open [http://localhost:3000](http://localhost:3000) in your browser.
+
+---
+
+## 📊 How the AI Grading Works
+
+When you end an interview session, the platform:
+
+1. **Aggregates** the full transcript of all Q&A exchanges
+2. **Sends** the transcript to Gemini 1.5 Flash with a FAANG-calibrated evaluation prompt
+3. **Scores** your performance across 7 dimensions:
+   - Technical Accuracy · Communication Clarity · Answer Structure · Depth of Knowledge · Confidence · Filler Word Control · Response Pacing
+4. **Generates** an Executive Summary, Core Strengths, Weaknesses, and a personalized Action Plan
+5. **Stores** everything in the database for longitudinal tracking
+
+---
+
+## 📁 Project Structure
+
+```
+src/
+├── app/
+│   ├── api/
+│   │   ├── sessions/[id]/grade/   # AI grading endpoint
+│   │   ├── sessions/evaluate/     # Per-exchange evaluation
+│   │   ├── questions/rag/         # RAG-powered question retrieval
+│   │   └── ...
+│   ├── session/[id]/              # Live interview interface
+│   ├── session/[id]/report/       # Post-session report card
+│   ├── dashboard/                 # Analytics & question bank
+│   └── auth/                      # Login, signup, password reset
+├── components/
+│   ├── dashboard/                 # Sidebar, charts, metrics
+│   └── landing/                   # Hero, DemoWidget, features
+├── lib/
+│   └── prisma.ts                  # Database client
+└── middleware.ts                  # Route protection & CSP
 ```
 
 ---
 
 ## 🗺️ Roadmap
-- [x] **Phase 1**: Core Real-time Voice Architecture
-- [x] **Phase 2**: Multi-modal Evaluation & RAG Integration
-- [x] **Phase 3**: Enterprise Hardening & Retention Loops
-- [ ] **Phase 4**: Multi-user "Mock-Room" Collaboration (Coming Q3)
-- [ ] **Phase 5**: Native iOS/Android Agent Integration (Coming Q4)
+
+- [x] Core Real-time Voice Architecture
+- [x] Multi-modal AI Evaluation (Gemini 1.5 Flash)
+- [x] Authentic Session Grading & Personalized Reports
+- [x] Company-Specific Question Banks (FAANG)
+- [x] Longitudinal Progress Tracking & Streaks
+- [x] Production Deployment (Vercel + Neon)
+- [ ] Multi-user "Mock Room" Collaboration
+- [ ] Native iOS/Android Agent
+- [ ] Voice Cloning for Custom Interviewer Personas
 
 ---
 
-&copy; 2026 InterviewForge AI. Built for those who build the future.
+## 🤝 Contributing
+
+1. Fork the repository
+2. Create your feature branch (`git checkout -b feature/amazing-feature`)
+3. Commit your changes (`git commit -m 'Add amazing feature'`)
+4. Push to the branch (`git push origin feature/amazing-feature`)
+5. Open a Pull Request
+
+---
+
+## 📄 License
+
+This project is proprietary software. All rights reserved.
+
+© 2026 InterviewForge AI. Built for those who build the future.
