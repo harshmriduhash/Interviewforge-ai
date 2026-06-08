@@ -2,11 +2,18 @@
 
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Radar, RadarChart, PolarGrid, PolarAngleAxis, ResponsiveContainer, RadarChart as RechartsRadarChart } from "recharts";
-import { Sparkles, Send, RefreshCcw, AlertCircle } from "lucide-react";
+import { Radar, RadarChart, PolarGrid, PolarAngleAxis, ResponsiveContainer } from "recharts";
+import { Sparkles, Send, RefreshCcw, Mic } from "lucide-react";
 import { toast } from "sonner";
 
 const SAMPLE_QUESTION = "How would you design a rate limiter for a high-traffic API like Twitter's, ensuring horizontally scalable consistency?";
+
+const ORANGE = "#FF5C00";
+const BG = "#0A0A0A";
+const SURFACE = "#141414";
+const BORDER = "#2E2E2E";
+const TEXT = "#F5F5F5";
+const MUTED = "#A3A3A3";
 
 export default function DemoWidget() {
     const [answer, setAnswer] = useState("");
@@ -34,51 +41,106 @@ export default function DemoWidget() {
     };
 
     const radarData = evaluation ? [
-        { subject: 'Technical', val: evaluation.scores.technical_accuracy },
-        { subject: 'Clarity', val: evaluation.scores.communication_clarity },
-        { subject: 'Structure', val: evaluation.scores.answer_structure },
+        { subject: 'Technical Accuracy', val: evaluation.scores.technical_accuracy },
+        { subject: 'Comm. Clarity', val: evaluation.scores.communication_clarity },
+        { subject: 'Architecture', val: evaluation.scores.answer_structure },
     ] : [];
 
     return (
-        <section className="py-24 px-6 relative overflow-hidden bg-[#0A0A0A]">
-            <div className="max-w-4xl mx-auto space-y-12 relative z-10">
-                <div className="text-center space-y-4">
-                    <h2 className="text-4xl font-black text-white italic uppercase tracking-tighter sm:text-5xl">
-                        Test the <span className="text-primary underline">Engine</span>
+        <section style={{ padding: "100px 24px", position: "relative", overflow: "hidden", background: BG }}>
+            {/* Ambient Background Glows */}
+            <div style={{ position: "absolute", top: "10%", left: "50%", transform: "translateX(-50%)", width: "80%", height: 600, background: `radial-gradient(ellipse, rgba(255,92,0,0.08) 0%, transparent 70%)`, pointerEvents: "none", zIndex: 0 }} />
+
+            <div style={{ maxWidth: 1000, margin: "0 auto", position: "relative", zIndex: 10 }}>
+                <div style={{ textAlign: "center", marginBottom: 64, display: "flex", flexDirection: "column", gap: 16 }}>
+                    <h2 style={{ fontSize: "clamp(32px, 5vw, 56px)", fontWeight: 900, color: TEXT, letterSpacing: "-1.5px", margin: 0, textTransform: "uppercase", fontStyle: "italic" }}>
+                        TEST THE <span style={{ color: ORANGE, borderBottom: `4px solid ${ORANGE}`, display: "inline-block", paddingBottom: 4 }}>ENGINE</span>
                     </h2>
-                    <p className="text-text-secondary text-lg max-w-xl mx-auto">
+                    <p style={{ fontSize: 18, color: MUTED, maxWidth: 600, margin: "0 auto", lineHeight: 1.6 }}>
                         Experience our 7-dimension AI grader. Answer a real senior-level system design prompt below.
                     </p>
                 </div>
 
-                <div className="glass p-8 md:p-12 rounded-[2rem] border border-border/60 bg-gradient-to-b from-surface/50 to-transparent shadow-2xl">
+                <div style={{
+                    background: "rgba(20,20,20,0.8)",
+                    backdropFilter: "blur(24px)",
+                    borderRadius: 32,
+                    border: `1px solid ${BORDER}`,
+                    padding: "48px",
+                    boxShadow: "0 40px 80px rgba(0,0,0,0.5), 0 0 60px rgba(255,92,0,0.05)",
+                    position: "relative"
+                }}>
                     {!evaluation ? (
-                        <div className="space-y-8">
-                            <div className="space-y-4">
-                                <label className="text-[10px] font-black uppercase tracking-[0.2em] text-primary flex items-center gap-2">
-                                    <Sparkles className="w-3.5 h-3.5" /> Target Prompt
+                        <div style={{ display: "flex", flexDirection: "column", gap: 32 }}>
+                            <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
+                                <label style={{ fontSize: 11, fontWeight: 900, color: ORANGE, textTransform: "uppercase", letterSpacing: "0.2em", display: "flex", alignItems: "center", gap: 8 }}>
+                                    <Sparkles style={{ width: 14, height: 14 }} /> TARGET PROMPT
                                 </label>
-                                <p className="text-xl md:text-2xl text-white font-medium leading-relaxed italic">
+                                <p style={{ fontSize: 22, color: TEXT, fontWeight: 600, lineHeight: 1.5, fontStyle: "italic", margin: 0 }}>
                                     "{SAMPLE_QUESTION}"
                                 </p>
                             </div>
 
-                            <div className="relative">
+                            <div style={{ position: "relative" }}>
                                 <textarea
                                     value={answer}
                                     onChange={(e) => setAnswer(e.target.value)}
                                     placeholder="Type your architectural approach here... (e.g. Using Redis fixed window or Token Bucket with sliding logs...)"
-                                    className="w-full h-48 bg-surface-2 border border-border rounded-xl p-6 text-sm text-text-primary outline-none focus:border-primary transition-all resize-none shadow-inner"
+                                    style={{
+                                        width: "100%",
+                                        height: 200,
+                                        background: "#0D0D0D",
+                                        border: `1px solid ${BORDER}`,
+                                        borderRadius: 16,
+                                        padding: 24,
+                                        fontSize: 15,
+                                        color: TEXT,
+                                        outline: "none",
+                                        resize: "none",
+                                        transition: "border-color 0.2s",
+                                        fontFamily: "var(--font-sans)",
+                                        lineHeight: 1.6
+                                    }}
+                                    onFocus={(e) => e.currentTarget.style.borderColor = ORANGE}
+                                    onBlur={(e) => e.currentTarget.style.borderColor = BORDER}
                                 />
                                 <button
                                     onClick={handleEvaluate}
                                     disabled={loading || !answer.trim()}
-                                    className="absolute bottom-4 right-4 bg-primary text-white p-3 rounded-xl hover:bg-primary-hover disabled:opacity-50 transition-all shadow-xl shadow-primary/20"
+                                    style={{
+                                        position: "absolute",
+                                        bottom: 16,
+                                        right: 16,
+                                        background: ORANGE,
+                                        color: "#fff",
+                                        padding: "12px 24px",
+                                        borderRadius: 12,
+                                        fontWeight: 700,
+                                        fontSize: 14,
+                                        display: "flex",
+                                        alignItems: "center",
+                                        gap: 8,
+                                        border: "none",
+                                        cursor: "pointer",
+                                        transition: "transform 0.2s, background 0.2s",
+                                        boxShadow: "0 8px 24px rgba(255,92,0,0.2)"
+                                    }}
+                                    onMouseEnter={(e) => {
+                                        if (!loading && answer.trim()) {
+                                            e.currentTarget.style.transform = "translateY(-2px)";
+                                            e.currentTarget.style.background = "#E64D00";
+                                        }
+                                    }}
+                                    onMouseLeave={(e) => {
+                                        e.currentTarget.style.transform = "translateY(0)";
+                                        e.currentTarget.style.background = ORANGE;
+                                    }}
                                 >
-                                    {loading ? <RefreshCcw className="w-5 h-5 animate-spin" /> : <Send className="w-5 h-5" />}
+                                    {loading ? <RefreshCcw style={{ width: 18, height: 18, animation: "spin 2s linear infinite" }} /> : <><Send style={{ width: 18, height: 18 }} /> Analyze Answer</>}
                                 </button>
                             </div>
-                            <p className="text-center text-[10px] text-text-muted font-bold uppercase tracking-widest">
+
+                            <p style={{ textAlign: "center", fontSize: 11, color: "#525252", fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.1em", margin: 0 }}>
                                 No login required · Analyzed in real-time by InterviewForge AI
                             </p>
                         </div>
@@ -86,36 +148,55 @@ export default function DemoWidget() {
                         <motion.div
                             initial={{ opacity: 0, y: 20 }}
                             animate={{ opacity: 1, y: 0 }}
-                            className="grid md:grid-cols-2 gap-12 items-center"
+                            style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 48, alignItems: "center" }}
+                            className="md:grid-cols-2 grid-cols-1"
                         >
-                            <div className="space-y-6">
-                                <h3 className="text-2xl font-black text-white italic uppercase">Evaluation Scorecard</h3>
-                                <div className="space-y-4">
-                                    <p className="text-sm text-text-secondary leading-relaxed bg-surface-2 p-4 rounded-xl border border-border/40">
-                                        <strong className="text-primary block mb-1">Feedback Summary</strong>
-                                        {evaluation.feedback_summary}
-                                    </p>
-                                    <div className="flex gap-4">
-                                        <div className="text-center bg-surface-2 p-4 rounded-2xl flex-1 border border-border/40">
-                                            <span className="text-2xl font-black text-white">{evaluation.overall_score}%</span>
-                                            <span className="block text-[8px] font-black text-text-muted uppercase mt-1">Overall Grade</span>
+                            <div style={{ display: "flex", flexDirection: "column", gap: 32 }}>
+                                <h3 style={{ fontSize: 24, fontWeight: 900, color: TEXT, textTransform: "uppercase", fontStyle: "italic", margin: 0 }}>Evaluation Scorecard</h3>
+                                <div style={{ display: "flex", flexDirection: "column", gap: 24 }}>
+                                    <div style={{ background: "#0D0D0D", padding: 24, borderRadius: 16, border: `1px solid ${BORDER}`, display: "flex", flexDirection: "column", gap: 8 }}>
+                                        <label style={{ fontSize: 11, fontWeight: 800, color: ORANGE, textTransform: "uppercase", letterSpacing: "0.1em" }}>Feedback Summary</label>
+                                        <p style={{ fontSize: 14, color: MUTED, lineHeight: 1.6, margin: 0 }}>{evaluation.feedback_summary}</p>
+                                    </div>
+                                    <div style={{ display: "flex", gap: 16 }}>
+                                        <div style={{ flex: 1, background: "#0D0D0D", padding: 24, borderRadius: 16, border: `1px solid ${BORDER}`, textAlign: "center" }}>
+                                            <span style={{ fontSize: 32, fontWeight: 900, color: TEXT, display: "block" }}>{evaluation.overall_score}%</span>
+                                            <span style={{ fontSize: 10, fontWeight: 800, color: "#525252", textTransform: "uppercase", letterSpacing: "0.1em", marginTop: 4, display: "block" }}>Overall Grade</span>
                                         </div>
                                         <button
                                             onClick={() => { setEvaluation(null); setAnswer(""); }}
-                                            className="flex-1 bg-surface border border-border hover:border-primary rounded-2xl text-[10px] font-black uppercase flex flex-col items-center justify-center gap-1.5 transition-all text-text-secondary hover:text-white"
+                                            style={{
+                                                flex: 1,
+                                                background: "transparent",
+                                                border: `1px solid ${BORDER}`,
+                                                borderRadius: 16,
+                                                color: MUTED,
+                                                fontWeight: 800,
+                                                fontSize: 12,
+                                                textTransform: "uppercase",
+                                                display: "flex",
+                                                flexDirection: "column",
+                                                alignItems: "center",
+                                                justifyContent: "center",
+                                                gap: 8,
+                                                cursor: "pointer",
+                                                transition: "all 0.2s"
+                                            }}
+                                            onMouseEnter={(e) => { e.currentTarget.style.borderColor = ORANGE; e.currentTarget.style.color = TEXT; }}
+                                            onMouseLeave={(e) => { e.currentTarget.style.borderColor = BORDER; e.currentTarget.style.color = MUTED; }}
                                         >
-                                            <RefreshCcw className="w-4 h-4" /> Try Again
+                                            <RefreshCcw style={{ width: 18, height: 18 }} /> Try Again
                                         </button>
                                     </div>
                                 </div>
                             </div>
 
-                            <div className="h-[240px] relative">
+                            <div style={{ height: 320, position: "relative" }}>
                                 <ResponsiveContainer width="100%" height="100%">
                                     <RadarChart cx="50%" cy="50%" outerRadius="80%" data={radarData}>
                                         <PolarGrid stroke="#2E2E2E" />
-                                        <PolarAngleAxis dataKey="subject" stroke="#A3A3A3" fontSize={10} tick={{ fill: "#A3A3A3", fontWeight: 'bold' }} />
-                                        <Radar name="Performance" dataKey="val" stroke="#FF5C00" fill="#FF5C00" fillOpacity={0.4} />
+                                        <PolarAngleAxis dataKey="subject" stroke="#525252" fontSize={11} tick={{ fill: "#A3A3A3", fontWeight: 700 }} />
+                                        <Radar name="Performance" dataKey="val" stroke={ORANGE} fill={ORANGE} fillOpacity={0.4} />
                                     </RadarChart>
                                 </ResponsiveContainer>
                             </div>
@@ -124,9 +205,9 @@ export default function DemoWidget() {
                 </div>
             </div>
 
-            {/* Decorative Orbs */}
-            <div className="absolute top-1/4 left-0 w-64 h-64 bg-primary/10 rounded-full blur-[120px] -z-10" />
-            <div className="absolute bottom-1/4 right-0 w-64 h-64 bg-primary/5 rounded-full blur-[120px] -z-10" />
+            <style>{`
+                @keyframes spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
+            `}</style>
         </section>
     );
 }
