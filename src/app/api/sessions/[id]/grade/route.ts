@@ -64,8 +64,22 @@ export async function POST(
             return NextResponse.json({ error: "Session not found" }, { status: 404 });
         }
 
+        // If no exchanges, write a minimal "no data" completion and return success
         if (dbSession.exchanges.length === 0) {
-            return NextResponse.json({ error: "No transcript data available to grade." }, { status: 400 });
+            await prisma.session.update({
+                where: { id: sessionId },
+                data: {
+                    status: "completed",
+                    overallScore: 0,
+                    aiSummary: "This session ended before any answers were recorded. No verbal response was captured, so a performance evaluation could not be generated. Speak your answers clearly during the next session to receive a detailed FAANG-level audit.",
+                    aiStrengths: [],
+                    aiWeaknesses: ["No response captured", "Session ended prematurely"],
+                    aiActionPlan: [
+                        { title: "Complete a full session", type: "General", resource: "Start a new practice session and speak your answers clearly" }
+                    ],
+                },
+            });
+            return NextResponse.json({ success: true, noData: true });
         }
 
         // Build Transcript String
