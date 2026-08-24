@@ -513,7 +513,7 @@ git push origin feature/your-feature
   <em>Built for engineers who refuse to fail in silence.</em><br/><br/>
   <a href="https://interviewforge-ai-web.vercel.app">Try it live →</a>
 </p>
-to be
+to be completely 
 <p align="center">
   © 2026 InterviewForge AI. All rights reserved.
 </p>
